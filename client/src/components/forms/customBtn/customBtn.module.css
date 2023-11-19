@@ -1,0 +1,10 @@
+.button {
+  @apply text-sm !bg-[#0071c2] text-white cursor-pointer
+    py-[10px] px-[20px] rounded-[5px] w-auto inline-block
+    transition-all duration-200 overflow-hidden z-[1] relative border-0
+    hover:text-[#151515] font-bold;
+  filter: drop-shadow(2px 4px 10px rgba(0, 0, 0, 0.1));
+}
+.grayBtn {
+  @apply !bg-[#898bce] !bg-none;
+}

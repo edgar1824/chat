@@ -1,0 +1,26 @@
+.pagination {
+  margin: 0 auto;
+  user-select: none;
+  @apply shadow-cst flex text-center justify-center w-fit;
+}
+.item {
+  background: #ffffff;
+  @apply bg-white border-[#dadada] border-[0.5px] py-2 px-[9px] text-[#575757] 
+  text-[13px] duration-300 border-r-0 leading-3;
+}
+.item:hover,
+.active {
+  @apply bg-[#575757] text-white;
+}
+.active {
+  @apply pointer-events-none;
+}
+
+.prev {
+  border-radius: 3px 0px 0px 3px;
+  @apply py-2 px-5;
+}
+.next {
+  border-radius: 0px 3px 3px 0px;
+  @apply py-2 px-5 border border-r-[1px];
+}

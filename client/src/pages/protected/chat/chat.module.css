@@ -1,0 +1,3 @@
+.chat {
+  @apply h-[calc(100vh_-_50px)] overflow-hidden flex;
+}

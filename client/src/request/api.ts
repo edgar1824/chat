@@ -1,0 +1,59 @@
+import axios from "axios";
+import { userHandler } from "../helpers";
+
+const baseURL = process.env.REACT_APP_API_URL;
+
+const instance = axios.create({
+  baseURL,
+  withCredentials: true,
+
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded",
+  },
+});
+
+// instance.defaults.withCredentials = true;
+
+instance.interceptors.request.use(
+  (config) => {
+    if (userHandler.getToken()) {
+      config.headers.Authorization = `Bearer ${userHandler.getToken()}`;
+    }
+    return config;
+  },
+  (err) => {
+    throw err;
+  }
+);
+
+instance.interceptors.response.use(
+  (config) => {
+    const data = config.data;
+    if (data?.access_token) {
+      userHandler.setToken(config.data.access_token);
+    }
+    return config;
+  },
+  async (err) => {
+    if (err?.response?.data?.message === "jwt expired") {
+      try {
+        const res = await axios.get(`${baseURL}auth/refresh`, {
+          withCredentials: true,
+        });
+        const { access_token, ...user } = res.data;
+        userHandler.setToken(access_token);
+
+        return instance.request(err.config);
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    } else if (err?.response?.data?.status === 401) {
+      window.open(`${window.location.origin}/auth/login`, "_self");
+    }
+    console.log(err);
+    throw err;
+  }
+);
+
+export default instance;

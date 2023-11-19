@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  text-decoration-skip-ink: none;
+}
+
+#root {
+  @apply min-h-screen overflow-x-hidden flex flex-col relative;
+}
+
+.main-input {
+  @apply px-6 py-4 border border-[gray] w-full;
+}
+.container {
+  @apply mx-auto px-[120px] max-w-[var(--max-w)]
+  xl:px-[50px]
+  md:!px-[24px];
+}
+
+input,
+optgroup,
+select,
+textarea {
+  @apply text-black;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-slate-200;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-500;
+}
+@media (max-width: 770px) {
+  .scrollbar-hidden::-webkit-scrollbar {
+    visibility: hidden;
+    display: none;
+  }
+}
+/* ################### Tilt Card Animation ################### */
+
+
+.tilt-card {
+  @apply w-fit h-fit;
+  perspective: 15px;
+  --tilt-dur: 100ms;
+}
+.inner {
+  @apply transition-transform duration-[var(--tilt-dur)] 
+  shadow-[2px_2px_50px_rgba(0,0,0,0.393)] overflow-hidden 
+  w-full h-full rounded-[15px];
+}

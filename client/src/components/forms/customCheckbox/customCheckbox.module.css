@@ -1,0 +1,12 @@
+.myCheckbox {
+  @apply w-[15px] h-[15px] shrink-0 relative appearance-none rounded-[3px] 
+  outline-1 outline outline-[#cccccc] bg-white;
+}
+.myCheckbox:checked {
+  outline: 1px solid #7764fb;
+}
+.myCheckbox:checked:after {
+  content: "";
+  @apply absolute bottom-[3px] left-[6px] w-[9px] h-[15px] 
+  border-r-[3px] border-b-[3px] border-[#7764fb] rotate-[52deg];
+}
