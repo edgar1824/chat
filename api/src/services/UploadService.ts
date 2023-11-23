@@ -4,8 +4,6 @@ import { fileURLToPath } from "url";
 const __dirname = fileURLToPath(new URL("../..", import.meta.url));
 const publicDir = path.join(__dirname, `public`);
 
-console.log(publicDir);
-
 class UploadService {
   static delete = (...names: string[]) => {
     if (names?.length) {

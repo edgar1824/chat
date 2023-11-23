@@ -5,8 +5,6 @@ import { IFind } from "../types/index.js";
 
 export class PostService {
   static create = async (body?: any, files?: any) => {
-    console.log(body, files);
-
     const newPost = new Post({ ...body, ...files });
     await newPost.save();
     return newPost;
