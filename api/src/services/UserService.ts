@@ -19,8 +19,9 @@ export class UserService {
     return updatedUser;
   };
   static delete = async (id) => {
-    const user = await User.findByIdAndDelete(id);
+    const user = await User.findById(id);
     UploadService.delete(user.img);
+    await user.deleteOne();
     return user;
   };
   static get = async (id) => {
