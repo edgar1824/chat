@@ -1,13 +1,7 @@
 {
-  "name": "ts-chat",
-  "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "build": "cd api && npm i && npm run build && cd ../client && npm i && npm run build",
-    "start": "node api/dist/index.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+    "build": "cd api && npm run build && cd ../client && npm run build",
+    "start": "cd api && npm start"
+  }
 }
