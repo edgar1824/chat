@@ -4,6 +4,8 @@ import { IPagination, RequestHandler } from "../types/index.js";
 export const paginate =
   (Model, isNext = true): RequestHandler =>
   async (req, res, next) => {
+    console.log(req?.query);
+
     const limit = parseInt(req?.query?.limit) || 999;
     const page = parseInt(req?.query?.page) || 1;
     const startIndex = (page - 1) * limit;

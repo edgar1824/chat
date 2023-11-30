@@ -56,7 +56,7 @@ const Component = () => {
     if (actionData?.status === 200) {
       setSubmited(false);
       setErrors({ desc: false, img: false });
-      setValues((p) => ({ desc: "", img: null! }));
+      setValues({ desc: "", img: null! });
     }
   }, [actionData]);
 

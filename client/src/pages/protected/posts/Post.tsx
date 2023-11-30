@@ -4,16 +4,10 @@ import { ViewInteraction } from "components/reusable";
 import { PROFILE_IMG } from "constants/profile";
 import { formFn, timeDifference } from "helpers";
 import { FC, useEffect, useState } from "react";
-import {
-  Link,
-  useActionData,
-  useNavigation,
-  useSubmit,
-} from "react-router-dom";
+import { Link, useSubmit } from "react-router-dom";
 import { PostService } from "request/services";
 import { IPost, IUser } from "types";
 import { Load } from "./Load";
-import { useAppContext } from "contexts";
 
 export const Post: FC<IPost<IUser>> = ({
   _id,

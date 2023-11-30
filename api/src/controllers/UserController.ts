@@ -109,6 +109,7 @@ class UserController {
       ].join(",");
       req.query.exclude = req?._user?._id.toString();
       await paginate(User, false)(req, res, next);
+
       res.status(200).json(res.paginated);
     } catch (err) {
       next(err);
@@ -117,4 +118,3 @@ class UserController {
 }
 
 export default UserController;
-  

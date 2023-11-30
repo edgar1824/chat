@@ -2,7 +2,7 @@ import { useAppContext } from "contexts";
 import { formFn } from "helpers";
 import { FC, PropsWithChildren, useEffect } from "react";
 import { useNavigation } from "react-router-dom";
-import { IPost, IUser } from "types";
+import { IPost } from "types";
 
 export const Load: FC<PropsWithChildren & Pick<IPost, "_id">> = ({
   children,

@@ -1,7 +1,6 @@
 import { faEye, faHand } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { routeActionHandler } from "helpers";
-import React from "react";
 import { PostService } from "request/services";
 
 const Component = () => {

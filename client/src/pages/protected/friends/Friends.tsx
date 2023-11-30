@@ -1,13 +1,14 @@
 import { CenterText, Pagination } from "components/reusable";
 import { useAppContext, useAuthContext } from "contexts";
-import { convertSearchParamsStr, formFn, routeActionHandler } from "helpers";
+import { formFn, routeActionHandler } from "helpers";
 import { useEffect, useState } from "react";
 import { useLoaderData, useParams } from "react-router-dom";
 import { ConversationService, UserService } from "request/services";
-import instance from "request/api";
 import { IPagination, IUser } from "types";
-import { Friend } from "./Friend";
 import { IResponse } from "types/requests";
+import { Friend } from "./Friend";
+
+const limit = 1;
 
 const Component = () => {
   const data = useLoaderData() as IPagination<IUser>;
@@ -16,15 +17,18 @@ const Component = () => {
   const [friends, setFriends] = useState(data?.items || []);
   const { page } = useParams();
 
+  console.log(friends);
+
   useEffect(() => {
     let controller = new AbortController();
 
     const getPaginatedFriends = async () => {
       try {
         const res = await UserService.getFriends(
-          { page: +page! },
+          { page: +page!, limit },
           { signal: controller.signal }
         );
+
         setFriends(res?.items);
       } catch (err) {
         if (!controller.signal.aborted) {
@@ -41,8 +45,6 @@ const Component = () => {
     };
   }, [me?.friends]);
 
-  // const friends = useMemo(() => , [me, data]);
-
   return (
     <div className="flex flex-col gap-10 py-5 justify-between min-h-[calc(100vh_-_50px)] md:py-0">
       <div className="mx-auto px-[32px] py-5 max-w-[1024px] grid w-full gap-7 relative md:gap-3 md:px-4 grid-cols-[repeat(auto-fit,_minmax(320px,_1fr))] md:grid-cols-1">
@@ -55,7 +57,7 @@ const Component = () => {
       <Pagination
         mainPath={"/friends"}
         paginationCount={data?.count!}
-        maxItems={4}
+        maxItems={2}
       />
     </div>
   );
@@ -63,10 +65,8 @@ const Component = () => {
 
 const loader = routeActionHandler(async ({ request }) => {
   const s = Object.fromEntries(new URL(request.url).searchParams);
-  const friends = await instance.get(
-    `users/friends?${convertSearchParamsStr({ page: s?.page, limit: 6 })}`
-  );
-  return friends.data;
+  const friends = await UserService.getFriends({ page: +s?.page, limit });
+  return friends;
 });
 
 const action = routeActionHandler(async ({ request }) => {
