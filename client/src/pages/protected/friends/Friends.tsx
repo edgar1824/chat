@@ -1,9 +1,10 @@
 import { CenterText, Pagination } from "components/reusable";
-import { useAppContext, useAuthContext } from "contexts";
+import { useAppContext } from "contexts";
 import { formFn, routeActionHandler } from "helpers";
 import { useEffect, useState } from "react";
 import { useLoaderData, useParams } from "react-router-dom";
 import { ConversationService, UserService } from "request/services";
+import { socket } from "socket";
 import { IPagination, IUser } from "types";
 import { IResponse } from "types/requests";
 import { Friend } from "./Friend";
@@ -13,11 +14,8 @@ const limit = 1;
 const Component = () => {
   const data = useLoaderData() as IPagination<IUser>;
   const { setError } = useAppContext();
-  const { me } = useAuthContext();
   const [friends, setFriends] = useState(data?.items || []);
   const { page } = useParams();
-
-  console.log(friends);
 
   useEffect(() => {
     let controller = new AbortController();
@@ -38,12 +36,24 @@ const Component = () => {
       }
     };
 
-    getPaginatedFriends();
+    ["get-friend", "remove-friend"].forEach((event) => {
+      socket.on(event, getPaginatedFriends);
+    });
 
     return () => {
       controller.abort();
+      socket.off("get-friend", getPaginatedFriends);
+      socket.off("remove-friend", getPaginatedFriends);
     };
-  }, [me?.friends]);
+  }, []);
+
+  useEffect(() => {
+    console.log(234);
+  }, []);
+
+  useEffect(() => {
+    setFriends(data?.items!);
+  }, [data]);
 
   return (
     <div className="flex flex-col gap-10 py-5 justify-between min-h-[calc(100vh_-_50px)] md:py-0">
@@ -57,7 +67,7 @@ const Component = () => {
       <Pagination
         mainPath={"/friends"}
         paginationCount={data?.count!}
-        maxItems={2}
+        maxItems={3}
       />
     </div>
   );

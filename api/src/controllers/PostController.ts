@@ -122,15 +122,16 @@ class PostController {
     try {
       const post = await PostService.getOne({ _id: req.body.postId });
       post.likes.push(req._user._id);
-      await post.save();
+      const newPost = await post.save();
+      const obj = "_doc" in newPost && (newPost?._doc as typeof newPost);
       res.status(200).json({
-        ...post,
-        likes: post.likes.length,
-        watched: post.watched.length,
-        hasMyLike: post.likes
+        ...obj,
+        likes: obj.likes.length,
+        watched: obj.watched.length,
+        hasMyLike: obj.likes
           .map((e) => e.toString())
           .includes(req._user._id.toString()),
-        haveWatched: post.watched
+        haveWatched: obj.watched
           .map((e) => e.toString())
           .includes(req._user._id.toString()),
       });
@@ -144,15 +145,16 @@ class PostController {
       post.likes = post.likes.filter(
         (l) => l.toString() !== req._user._id.toString()
       );
-      await post.save();
+      const newPost = await post.save();
+      const obj = "_doc" in newPost && (newPost?._doc as typeof newPost);
       res.status(200).json({
-        ...post,
-        likes: post.likes.length,
-        watched: post.watched.length,
-        hasMyLike: post.likes
+        ...obj,
+        likes: obj.likes.length,
+        watched: obj.watched.length,
+        hasMyLike: obj.likes
           .map((e) => e.toString())
           .includes(req._user._id.toString()),
-        haveWatched: post.watched
+        haveWatched: obj.watched
           .map((e) => e.toString())
           .includes(req._user._id.toString()),
       });

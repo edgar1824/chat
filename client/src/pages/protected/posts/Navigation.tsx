@@ -28,7 +28,7 @@ export const Navigation = () => {
   return (
     <Box
       as="abbr"
-      className="absolute top-5 right-5 md:right-1"
+      className="absolute top-5 right-5 md:right-1 md:top-1"
       onOutside={() => setShow(false)}
     >
       <FontAwesomeIcon

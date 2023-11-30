@@ -3,11 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ViewInteraction } from "components/reusable";
 import { PROFILE_IMG } from "constants/profile";
 import { formFn, timeDifference } from "helpers";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { Link, useSubmit } from "react-router-dom";
 import { PostService } from "request/services";
 import { IPost, IUser } from "types";
 import { Load } from "./Load";
+import { useMedia } from "hooks";
 
 export const Post: FC<IPost<IUser>> = ({
   _id,
@@ -59,7 +60,7 @@ export const Post: FC<IPost<IUser>> = ({
     <>
       <ViewInteraction
         onInteraction={addWatched}
-        className="flex flex-col shadow-md gap-3 border px-2 py-3"
+        className="flex flex-col shadow-md gap-3 border px-2 py-3 h-fit md:py-1 md:px-1 md:gap-1"
       >
         <Link className="flex-[1] flex" to={`/posts/${_id}`}>
           <img
@@ -69,18 +70,27 @@ export const Post: FC<IPost<IUser>> = ({
           />
         </Link>
         <div className="flex flex-col gap-2">
-          <div className="inline">
-            <Link to={`/users/${user?._id}`}>
+          <div className="flex gap-3 md:gap-1">
+            <Link to={`/users/${user?._id}`} className="shrink-0">
               <img
-                className="w-7 h-7 rounded-full shadow-md inline mr-2 mb-2"
+                className="w-7 h-7 rounded-full shadow-md"
                 src={img || PROFILE_IMG}
                 alt=""
               />
             </Link>
-            <p className="inline">{desc}</p>
+            <MoreText
+              parentClass="w-full"
+              className="break-words break-all md:leading-4 md:text-sm"
+              lines={1}
+              leading={16}
+              text={desc! + desc! + desc! + desc! + desc!}
+            />
+            {/* <p className="break-words break-all md:leading-4 md:text-sm">
+              {desc}
+            </p> */}
           </div>
           <div className="flex flex-col">
-            <div className="flex gap-5">
+            <div className="flex gap-5 md:gap-3">
               <div className="flex items-center gap-1">
                 <Load {...{ _id, ...props }}>
                   <FontAwesomeIcon
@@ -104,5 +114,57 @@ export const Post: FC<IPost<IUser>> = ({
         </div>
       </ViewInteraction>
     </>
+  );
+};
+
+const MoreText = ({
+  text = "",
+  className = "",
+  parentClass = "",
+  leading = 16,
+  lines = 1,
+}: {
+  lines?: number;
+  leading?: number;
+  text?: string;
+  className?: string;
+  parentClass?: string;
+}) => {
+  const ref = useRef<HTMLParagraphElement>(null!);
+  const [show, setShow] = useState(false);
+  const [showButton, setShowButton] = useState(useMedia(770));
+
+  useEffect(() => {
+    setShowButton(
+      !(
+        ref.current?.scrollHeight - ref.current?.scrollHeight / 2 <=
+        ref.current?.offsetHeight
+      )
+    );
+  }, [ref]);
+
+  return (
+    <div className={"flex flex-col " + parentClass}>
+      <p
+        ref={ref}
+        className={className}
+        style={{
+          height: show ? "100%" : leading * lines + "px",
+          overflow: "hidden",
+        }}
+      >
+        {text}
+      </p>
+      {showButton && (
+        <span
+          onClick={() => {
+            setShow((p) => !p);
+          }}
+          className="cursor-pointer text-xs h-3 flex items-center justify-center self-end"
+        >
+          {show ? "less" : "more..."}
+        </span>
+      )}
+    </div>
   );
 };

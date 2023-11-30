@@ -4,7 +4,7 @@ import styles from "./pagination.module.css";
 
 interface Props {
   paginationCount: number;
-  maxItems?: number;
+  maxItems?: number; // MIN 3
   mainPath: string;
   dots?: boolean;
 }
@@ -26,8 +26,10 @@ export const Pagination: FC<Props> = ({
     .page;
 
   const [isDots, setIsDots] = useState({
-    next: page <= paginationCount - Math.floor(maxItems / 2),
-    prev: page > Math.floor(maxItems / 2),
+    next:
+      paginationCount > maxItems &&
+      page <= paginationCount - Math.floor(maxItems / 2),
+    prev: paginationCount > maxItems && page > Math.floor(maxItems / 2),
   });
   const [items, setItems] = useState(
     changeFstAndLastElems(
@@ -79,7 +81,9 @@ export const Pagination: FC<Props> = ({
   }, [page]);
 
   useEffect(() => {
-    setIsDots({ next: page < paginationCount - 1, prev: page > 2 });
+    if (paginationCount > maxItems) {
+      setIsDots({ next: page < paginationCount - 1, prev: page > 2 });
+    }
   }, [items]);
 
   if (!paginationCount || paginationCount === 1) {

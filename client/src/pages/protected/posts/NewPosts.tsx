@@ -12,7 +12,7 @@ const Component = () => {
   const data = useLoaderData() as ILoaderData;
 
   return (
-    <div className="flex-[1] grid grid-cols-[repeat(auto-fill,_minmax(280px,_1fr))] px-[32px] py-5 gap-5 md:gap-3">
+    <div className="flex-[1] grid grid-cols-[repeat(auto-fill,_minmax(280px,_1fr))] px-[32px] py-5 gap-5 md:px-3 md:pt-10 md:grid-cols-2 md:gap-2">
       {data.newPosts.map((p) => (
         <Post key={p._id} {...p} />
       ))}

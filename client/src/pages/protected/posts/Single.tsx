@@ -9,8 +9,10 @@ import { FC, FormEvent, useEffect, useRef, useState } from "react";
 import { IComment, IPost, IUser } from "types";
 import { Load } from "./Load";
 import {
+  useActionData,
   useFormAction,
   useLoaderData,
+  useNavigation,
   useParams,
   useSubmit,
 } from "react-router-dom";
@@ -27,6 +29,8 @@ interface ILoaderData {
 const Component: FC = () => {
   const submit = useSubmit();
   const action = useFormAction();
+  const actionData = useActionData();
+  const navigation = useNavigation();
   const { post } = useLoaderData() as ILoaderData;
   const [watched, setwatched] = useState(post?.watched);
   const [showComments, setShowComments] = useState(false);
@@ -48,10 +52,13 @@ const Component: FC = () => {
   useEffect(() => {
     setwatched(post?.watched);
   }, [post?.watched]);
+
+  console.log(actionData);
+
   return (
-    <div className="flex gap-5 py-5 flex-[1] h-screen md:h-auto md:flex-col">
+    <div className="flex gap-5 py-5 w-full h-screen md:h-auto md:flex-col md:min-h-[90vh]">
       <img
-        className="flex-4 md:px-2 md:max-h-[60vh] md:max-w-[500px]"
+        className="w-[40%] md:w-full md:self-center md:px-2 md:max-h-[60vh] md:max-w-[500px]"
         src={post?.img}
         alt=""
       />
@@ -80,7 +87,7 @@ const Component: FC = () => {
                     />
                   ))}
                 </div>
-                <span>and {post?.likes! - 3} more</span>
+                {post?.likes! > 3 && <span> and {post?.likes! - 3} more</span>}
               </div>
               <div className="flex items-center gap-1 md:gap-0">
                 <FontAwesomeIcon
@@ -117,7 +124,7 @@ const CommentsBlock: FC = () => {
 
   return (
     <div className="flex flex-col gap-5 flex-[1]">
-      <div className="flex flex-col gap-3 flex-[1] overflow-y-auto max-h-[calc(100vh_-_270px)] pr-2">
+      <div className="shadow-[0_5px_20px_5px_rgb(0_0_0_/_0.1)] flex flex-col gap-3 flex-[1] overflow-y-auto max-h-[calc(100vh_-_270px)] pr-2">
         {comments?.map(({ desc, comentatorId, _id }) => (
           <div
             key={_id}

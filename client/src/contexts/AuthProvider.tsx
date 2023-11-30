@@ -82,19 +82,21 @@ export const AuthProvider: FC<Props> = ({ children }) => {
       setNotifs((p) => [data, ...p]);
     });
 
+    const myInfoHanlder = () => {
+      AuthService.getMyInfo()
+        .then((d) => setMe(d))
+        .catch((err) => setError(err));
+    };
+
     ["get-friend", "remove-friend"].forEach((event) => {
-      socket.on(event, () => {
-        AuthService.getMyInfo()
-          .then((d) => setMe(d))
-          .catch((err) => setError(err));
-      });
+      socket.on(event, myInfoHanlder);
     });
 
     return () => {
       socket.off("get-users");
       socket.off("get-notification");
-      socket.off("get-friend");
-      socket.off("remove-friend");
+      socket.off("get-friend", myInfoHanlder);
+      socket.off("remove-friend", myInfoHanlder);
       socket.disconnect();
     };
   }, [me, data]);
