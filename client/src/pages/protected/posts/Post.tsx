@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ViewInteraction } from "components/reusable";
 import { PROFILE_IMG } from "constants/profile";
 import { formFn, timeDifference } from "helpers";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, ReactNode, useEffect, useRef, useState } from "react";
 import { Link, useSubmit } from "react-router-dom";
 import { PostService } from "request/services";
 import { IPost, IUser } from "types";
@@ -23,7 +23,7 @@ export const Post: FC<IPost<IUser>> = ({
   ...props
 }) => {
   const submit = useSubmit();
-
+  const media770 = useMedia(770);
   const [watched, setwatched] = useState(w);
 
   const likeClickHandler = () => {
@@ -70,19 +70,19 @@ export const Post: FC<IPost<IUser>> = ({
           />
         </Link>
         <div className="flex flex-col gap-2">
-          <div className="flex gap-3 md:gap-1">
-            <Link to={`/users/${user?._id}`} className="shrink-0">
+          <div>
+            <Link to={`/users/${user?._id}`} className="float-left shrink-0">
               <img
-                className="w-7 h-7 rounded-full shadow-md"
+                className="w-7 h-7 rounded-full shadow-md float-left mr-3 md:mr-2"
                 src={img || PROFILE_IMG}
                 alt=""
               />
             </Link>
             <MoreText
               parentClass="w-full"
-              className="break-words break-all md:leading-4 md:text-sm"
+              className="break-words break-all leading-6 text-base md:leading-4 md:text-sm"
               lines={1}
-              leading={16}
+              leading={media770 ? 16 : 24}
               text={desc! + desc! + desc! + desc! + desc!}
             />
             {/* <p className="break-words break-all md:leading-4 md:text-sm">
@@ -132,7 +132,7 @@ const MoreText = ({
 }) => {
   const ref = useRef<HTMLParagraphElement>(null!);
   const [show, setShow] = useState(false);
-  const [showButton, setShowButton] = useState(useMedia(770));
+  const [showButton, setShowButton] = useState(true);
 
   useEffect(() => {
     setShowButton(
@@ -144,23 +144,22 @@ const MoreText = ({
   }, [ref]);
 
   return (
-    <div className={"flex flex-col " + parentClass}>
+    <div className={" " + parentClass}>
       <p
         ref={ref}
         className={className}
         style={{
           height: show ? "100%" : leading * lines + "px",
-          overflow: "hidden",
+          overflow: show ? "unset" : "hidden",
         }}
       >
         {text}
       </p>
       {showButton && (
         <span
-          onClick={() => {
-            setShow((p) => !p);
-          }}
-          className="cursor-pointer text-xs h-3 flex items-center justify-center self-end"
+          onClick={() => setShow((p) => !p)}
+          style={{ float: "inline-end" }}
+          className="cursor-pointer text-xs h-3 mr-2 text-slate-500"
         >
           {show ? "less" : "more..."}
         </span>

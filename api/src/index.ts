@@ -28,6 +28,7 @@ import User from "./models/User.js";
 import Token from "./models/Token.js";
 import Notification from "./models/Notification.js";
 import Post from "./models/Post.js";
+import Comment from "./models/Comment.js";
 
 import "./config/passport-setup.js";
 import { turnOnSocket } from "./config/socket.js";
@@ -105,6 +106,7 @@ app.listen(process.env.PORT, () => {
     console.log("Socket Turned ON!!!");
 
     connectDB().then(() => {
+      // Comment.deleteMany().then(() => console.log(123));
       const models = [
         // Message,
         // Conversation,

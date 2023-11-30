@@ -58,7 +58,7 @@ const Component: FC = () => {
   return (
     <div className="flex gap-5 py-5 w-full h-screen md:h-auto md:flex-col md:min-h-[90vh]">
       <img
-        className="w-[40%] md:w-full md:self-center md:px-2 md:max-h-[60vh] md:max-w-[500px]"
+        className="w-[40%] md:w-full md:self-center md:px-2 md:h-[60vh] md:border md:border-[rgb(186_186_186)] md:object-contain md:max-w-[500px]"
         src={post?.img}
         alt=""
       />
