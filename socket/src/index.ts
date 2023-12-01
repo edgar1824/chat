@@ -16,16 +16,8 @@ const server = http
     switch (req.url) {
       case "/check": {
         res.setHeader("Access-Control-Allow-Origin", process.env.API_URL);
-        res.setHeader(
-          "Access-Control-Allow-Methods",
-          "GET, POST, OPTIONS, PUT, PATCH, DELETE"
-        );
-        res.setHeader(
-          "Access-Control-Allow-Headers",
-          "X-Requested-With,content-type"
-        );
-        res.setHeader("Access-Control-Allow-Credentials", "true");
         res.setHeader("Content-Type", "application/json");
+
         res.statusCode = 200;
         res.end(JSON.stringify({ connected: true }));
         break;

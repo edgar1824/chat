@@ -22,7 +22,7 @@ export const turnOnSocket = () => {
     .request(options, (res) => {
       res.on("data", (chunk) => (data += chunk));
       res.on("end", () => {
-        if (!JSON?.parse?.(data)?.connected) {
+        if (!!data && !JSON?.parse?.(data)?.connected) {
           throw createError(404, "Socket didn't connect!");
         }
       });
