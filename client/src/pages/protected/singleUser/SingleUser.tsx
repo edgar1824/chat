@@ -31,9 +31,9 @@ const Component = () => {
         />
         <div className="flex flex-col gap-4 mt-20 md:m-0">
           <p className="text-[44px] font-bold">{data?.username}</p>
-          {/* <Link to={}> */}
-          <CustomBtn onClick={handleSubmit}>Message</CustomBtn>
-          {/* </Link> */}
+          {me?._id !== data?._id && (
+            <CustomBtn onClick={handleSubmit}>Message</CustomBtn>
+          )}
           <span className="text-[36px]">{data?.country}</span>
           <div className="flex flex-col gap-4">
             {data?.city && (

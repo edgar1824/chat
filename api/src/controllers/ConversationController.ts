@@ -186,7 +186,10 @@ class ConversationController {
         type: "dialogue",
       });
       if (conv) {
-        return res.status(200).json({ ...(conv || conv), new: false });
+        return res.status(200).json({
+          ...("_doc" in conv ? (conv?._doc as typeof conv) : conv),
+          new: false,
+        });
       }
       const newConv = await ConversationService.create({
         members: [req.body.friendId, req?._user?._id],
@@ -194,7 +197,10 @@ class ConversationController {
         type: "dialogue",
       });
 
-      return res.status(200).json({ ...newConv, new: true });
+      return res.status(200).json({
+        ...("_doc" in newConv ? (newConv._doc as typeof newConv) : newConv),
+        new: true,
+      });
     } catch (err) {
       next(err);
     }

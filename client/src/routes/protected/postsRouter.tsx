@@ -7,7 +7,6 @@ import { RouteObject } from "react-router-dom";
 export const postsRoutes: RouteObject = {
   path: "posts",
   element: <Posts />,
-  action: Posts.action,
   children: [
     {
       index: true,

@@ -1,47 +1,29 @@
-import { faEye, faHand } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { routeActionHandler } from "helpers";
+import { useLoaderData } from "react-router-dom";
 import { PostService } from "request/services";
+import { IPost, IUser } from "types";
+import { Post } from "./Post";
+import { CenterText } from "components/reusable";
+
+interface ILoaderData {
+  myPosts: IPost<IUser>[];
+}
 
 const Component = () => {
-  return <div>MyPosts</div>;
-};
+  const data = useLoaderData() as ILoaderData;
 
-const Post = ({
-  desc,
-  title,
-  watched,
-  likes,
-  img,
-}: {
-  desc?: string;
-  title?: string;
-  watched?: number;
-  likes?: number;
-  img?: string;
-}) => {
   return (
-    <div className="flex flex-col gap-5 px-3 py-4 rounded bg-white shadow-md max-w-[260px]">
-      <img src={img} className="w-full h-[200px]" alt="" />
-      <div>
-        <p>{title}</p>
-        <div>
-          <span>
-            {watched} <FontAwesomeIcon icon={faEye} />
-          </span>
-          <span>
-            {likes} <FontAwesomeIcon icon={faHand} />
-          </span>
-        </div>
-      </div>
-      <p>{desc}</p>
+    <div className="flex-[1] grid grid-cols-[repeat(auto-fill,_minmax(280px,_1fr))] px-[32px] py-5 gap-5 md:px-3 md:pt-10 md:grid-cols-2 md:gap-2">
+      {!!data?.myPosts?.length ? data?.myPosts?.map((p) => (
+        <Post key={p._id} {...p} />
+      )) : <CenterText>You don't have any posts</CenterText>}
     </div>
   );
 };
 
-const loader = routeActionHandler(async () => {
-  const myPosts = await PostService.getMine();
-  return myPosts;
+const loader = routeActionHandler<ILoaderData>(async () => {
+  const myPosts = await PostService.getMine<IUser>();
+  return { myPosts: myPosts.data };
 });
 
 export const MyPosts = Object.assign(Component, { loader });

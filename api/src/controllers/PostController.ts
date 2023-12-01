@@ -1,6 +1,35 @@
-import { RequestHandler } from "../types/index.js";
+import { Document, Types } from "mongoose";
 import { createError } from "../helpers/createError.js";
 import { PostService, UserService } from "../services/index.js";
+import { RequestHandler } from "../types/index.js";
+import { IPost } from "models/Post.js";
+
+const convertToResp = async (
+  post: Document<unknown, {}, IPost> &
+    IPost & {
+      _id: Types.ObjectId;
+    },
+  req: Parameters<RequestHandler>[0]
+) => {
+  const peopleLiked = (
+    await UserService.getAll({
+      _id: { $in: post.likes.slice(0, 3).map((e) => e.toString()) },
+    })
+  ).map((u) => u?.img);
+  const result = {
+    ...post,
+    peopleLiked,
+    likes: post.likes.length,
+    watched: post.watched.length,
+    hasMyLike: post.likes
+      .map((e) => e.toString())
+      .includes(req._user._id.toString()),
+    haveWatched: post.watched
+      .map((e) => e.toString())
+      .includes(req._user._id.toString()),
+  };
+  return result;
+};
 
 class PostController {
   static delete: RequestHandler = async (req, res, next) => {
@@ -38,25 +67,7 @@ class PostController {
         { lean: true }
       );
 
-      const peopleLiked = (
-        await UserService.getAll({
-          _id: { $in: post.likes.slice(0, 3).map((e) => e.toString()) },
-        })
-      ).map((u) => u?.img);
-
-      const result = {
-        ...post,
-        peopleLiked,
-        likes: post.likes.length,
-        watched: post.watched.length,
-        hasMyLike: post.likes
-          .map((e) => e.toString())
-          .includes(req._user._id.toString()),
-        haveWatched: post.watched
-          .map((e) => e.toString())
-          .includes(req._user._id.toString()),
-      };
-      res.status(200).json(result);
+      res.status(200).json(await convertToResp(post, req));
     } catch (err) {
       next(err);
     }
@@ -72,15 +83,11 @@ class PostController {
           populate: { path: "user", select: "username img _id" },
         }
       );
-      res.status(200).json(
-        posts.map((p) => ({
-          ...p,
-          likes: p.likes.length,
-          watched: p.watched.length,
-          hasMyLike: p.likes.includes(req._user._id),
-          haveWatched: p.likes.includes(req._user._id),
-        }))
-      );
+      res
+        .status(200)
+        .json(
+          await Promise.all(posts.map(async (p) => await convertToResp(p, req)))
+        );
     } catch (err) {
       next(err);
     }
@@ -101,19 +108,11 @@ class PostController {
         }
       );
 
-      res.status(200).json(
-        posts.map((p) => ({
-          ...p,
-          likes: p.likes.length,
-          watched: p.watched.length,
-          hasMyLike: p.likes
-            .map((e) => e.toString())
-            .includes(req._user._id.toString()),
-          haveWatched: p.watched
-            .map((e) => e.toString())
-            .includes(req._user._id.toString()),
-        }))
-      );
+      res
+        .status(200)
+        .json(
+          await Promise.all(posts.map(async (p) => await convertToResp(p, req)))
+        );
     } catch (err) {
       next(err);
     }
@@ -124,17 +123,7 @@ class PostController {
       post.likes.push(req._user._id);
       const newPost = await post.save();
       const obj = "_doc" in newPost && (newPost?._doc as typeof newPost);
-      res.status(200).json({
-        ...obj,
-        likes: obj.likes.length,
-        watched: obj.watched.length,
-        hasMyLike: obj.likes
-          .map((e) => e.toString())
-          .includes(req._user._id.toString()),
-        haveWatched: obj.watched
-          .map((e) => e.toString())
-          .includes(req._user._id.toString()),
-      });
+      res.status(200).json(await convertToResp(obj, req));
     } catch (err) {
       next(err);
     }
@@ -147,17 +136,7 @@ class PostController {
       );
       const newPost = await post.save();
       const obj = "_doc" in newPost && (newPost?._doc as typeof newPost);
-      res.status(200).json({
-        ...obj,
-        likes: obj.likes.length,
-        watched: obj.watched.length,
-        hasMyLike: obj.likes
-          .map((e) => e.toString())
-          .includes(req._user._id.toString()),
-        haveWatched: obj.watched
-          .map((e) => e.toString())
-          .includes(req._user._id.toString()),
-      });
+      res.status(200).json(await convertToResp(obj, req));
     } catch (err) {
       next(err);
     }
@@ -165,25 +144,16 @@ class PostController {
   static addWatched: RequestHandler = async (req, res, next) => {
     try {
       const post = await PostService.getOne({ _id: req.body.postId });
+      let newPost, obj;
 
       if (
         !post.watched.some((e) => e.toString() === req._user._id.toString())
       ) {
         post.watched.push(req._user._id);
-        await post.save();
+        newPost = await post.save();
+        obj = "_doc" in newPost && (newPost?._doc as typeof newPost);
       }
-
-      res.status(200).json({
-        ...post.toObject(),
-        likes: post.likes.length,
-        watched: post.watched.length,
-        hasMyLike: post.likes
-          .map((e) => e.toString())
-          .includes(req._user._id.toString()),
-        haveWatched: post.watched
-          .map((e) => e.toString())
-          .includes(req._user._id.toString()),
-      });
+      res.status(200).json(await convertToResp(obj, req));
     } catch (err) {
       next(err);
     }

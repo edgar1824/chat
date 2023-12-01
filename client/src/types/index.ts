@@ -62,6 +62,7 @@ export interface IPost<T extends IUser | string = string> extends DBDocument {
   // Not in the DB
   hasMyLike?: boolean;
   haveWatched?: boolean;
+  peopleLiked?: string[];
 }
 export interface IComment<TUser extends IUser | string = string>
   extends DBDocument {

@@ -13,3 +13,4 @@ export { DoubleClick } from "./DoubleClick";
 export { OutsideDetector } from "./OutsideDetector";
 export { Animated } from "./Animated";
 export { ViewInteraction } from "./ViewInteraction";
+export { TextExpander } from "./TextExpander";

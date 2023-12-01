@@ -10,8 +10,13 @@ export class PostService {
     const res = await instance.post<IPost>(this.#route, fd, config);
     return res;
   }
-  static async getMine(config?: IService["config"]) {
-    const res = await instance.get<IPost[]>(`${this.#route}/my-posts`, config);
+  static async getMine<T extends string | IUser = string>(
+    config?: IService["config"]
+  ) {
+    const res = await instance.get<IPost<T>[]>(
+      `${this.#route}/my-posts`,
+      config
+    );
     return res;
   }
   static async getNewPosts(config?: IService["config"]) {
@@ -28,16 +33,22 @@ export class PostService {
     );
     return post;
   }
-  static async addLike(postId: string, config?: IService["config"]) {
-    const post = await instance.put<IPost>(
+  static async addLike<T extends string | IUser = string>(
+    postId: string,
+    config?: IService["config"]
+  ) {
+    const post = await instance.put<IPost<T>>(
       `${this.#route}/add-like`,
       { postId },
       config
     );
     return post;
   }
-  static async deleteLike(postId: string, config?: IService["config"]) {
-    const post = await instance.put<IPost>(
+  static async deleteLike<T extends string | IUser = string>(
+    postId: string,
+    config?: IService["config"]
+  ) {
+    const post = await instance.put<IPost<T>>(
       `${this.#route}/delete-like`,
       { postId },
       config

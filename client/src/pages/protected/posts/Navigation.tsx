@@ -14,11 +14,14 @@ const routes = [
     to: "/posts",
     title: "Posts",
   },
+  {
+    to: "/posts/mine",
+    title: "My Posts",
+  },
 ];
 
 export const Navigation = () => {
   const { state } = useNavigation();
-
   const [show, setShow] = useState(false);
 
   useEffect(() => {

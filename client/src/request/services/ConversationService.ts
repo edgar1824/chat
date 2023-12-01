@@ -30,6 +30,7 @@ export class ConversationService {
     const conv = await instance.post("conversations/to-dialogue", {
       friendId: id,
     });
+    console.log(conv);
     if (conv.data?.new) {
       socket.emit("create-conversation", conv.data);
     }

@@ -106,21 +106,17 @@ app.listen(process.env.PORT, () => {
     console.log("Socket Turned ON!!!");
 
     connectDB().then(() => {
-      // Comment.deleteMany().then(() => console.log(123));
-      const models = [
-        // Message,
-        // Conversation,
-        // User,
-        // Token,
-        // Notification,
-        // Post,
-      ];
-      !!models?.length &&
-        models.forEach((Model) => {
-          Model?.deleteMany()
-            .then(() => console.log(200))
-            .catch((err) => console.log(err));
-        });
+      // Comment.deleteMany().then(() => console.log("Comment dropped!"));
+      // Message.deleteMany().then(() => console.log("Message dropped!"));
+      // Conversation.deleteMany().then(() =>
+      //   console.log("Conversation dropped!")
+      // );
+      // User.deleteMany().then(() => console.log("User dropped!"));
+      // Token.deleteMany().then(() => console.log("Token dropped!"));
+      // Notification.deleteMany().then(() =>
+      //   console.log("Notification dropped!")
+      // );
+      // Post.deleteMany().then(() => console.log("Post dropped!"));
     });
   });
 });

@@ -1,14 +1,14 @@
 import { faEye, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ViewInteraction } from "components/reusable";
+import { LikeButton } from "components/main";
+import { TextExpander, ViewInteraction } from "components/reusable";
 import { PROFILE_IMG } from "constants/profile";
 import { formFn, timeDifference } from "helpers";
-import { FC, ReactNode, useEffect, useRef, useState } from "react";
+import { useMedia } from "hooks";
+import { FC, useCallback, useEffect, useState } from "react";
 import { Link, useSubmit } from "react-router-dom";
 import { PostService } from "request/services";
 import { IPost, IUser } from "types";
-import { Load } from "./Load";
-import { useMedia } from "hooks";
 
 export const Post: FC<IPost<IUser>> = ({
   _id,
@@ -25,20 +25,6 @@ export const Post: FC<IPost<IUser>> = ({
   const submit = useSubmit();
   const media770 = useMedia(770);
   const [watched, setwatched] = useState(w);
-
-  const likeClickHandler = () => {
-    submit(
-      formFn.toFormData({
-        postId: _id,
-        role: hasMyLike ? "delete-like" : "add-like",
-      }),
-      {
-        action: "/posts",
-        encType: "multipart/form-data",
-        method: "PUT",
-      }
-    );
-  };
 
   const addWatched = async () => {
     if (!haveWatched) {
@@ -64,7 +50,7 @@ export const Post: FC<IPost<IUser>> = ({
       >
         <Link className="flex-[1] flex" to={`/posts/${_id}`}>
           <img
-            className="min-h-[200px] select-none flex-[1] max-h-[300px] object-fill cursor-pointer"
+            className="min-h-[200px] select-none flex-[1] max-h-[300px] object-fill cursor-pointer md:max-h-[200px]"
             src={img}
             alt=""
           />
@@ -74,34 +60,35 @@ export const Post: FC<IPost<IUser>> = ({
             <Link to={`/users/${user?._id}`} className="float-left shrink-0">
               <img
                 className="w-7 h-7 rounded-full shadow-md float-left mr-3 md:mr-2"
-                src={img || PROFILE_IMG}
+                src={user?.img || PROFILE_IMG}
                 alt=""
               />
             </Link>
-            <MoreText
+            <TextExpander
               parentClass="w-full"
               className="break-words break-all leading-6 text-base md:leading-4 md:text-sm"
               lines={1}
               leading={media770 ? 16 : 24}
-              text={desc! + desc! + desc! + desc! + desc!}
+              text={desc}
             />
-            {/* <p className="break-words break-all md:leading-4 md:text-sm">
-              {desc}
-            </p> */}
           </div>
           <div className="flex flex-col">
             <div className="flex gap-5 md:gap-3">
-              <div className="flex items-center gap-1">
-                <Load {...{ _id, ...props }}>
-                  <FontAwesomeIcon
-                    onClick={likeClickHandler}
-                    icon={faThumbsUp}
-                    color={hasMyLike ? "red" : "gray"}
-                    className="cursor-pointer"
-                  />
-                  {likes}
-                </Load>
-              </div>
+              <LikeButton
+                {...{
+                  _id,
+                  img,
+                  desc,
+                  createdAt,
+                  likes,
+                  watched: w,
+                  hasMyLike,
+                  haveWatched,
+                  user,
+                  ...props,
+                }}
+              />
+
               <div className="flex items-center gap-1">
                 <FontAwesomeIcon icon={faEye} color="gray" />
                 {watched}
@@ -114,56 +101,5 @@ export const Post: FC<IPost<IUser>> = ({
         </div>
       </ViewInteraction>
     </>
-  );
-};
-
-const MoreText = ({
-  text = "",
-  className = "",
-  parentClass = "",
-  leading = 16,
-  lines = 1,
-}: {
-  lines?: number;
-  leading?: number;
-  text?: string;
-  className?: string;
-  parentClass?: string;
-}) => {
-  const ref = useRef<HTMLParagraphElement>(null!);
-  const [show, setShow] = useState(false);
-  const [showButton, setShowButton] = useState(true);
-
-  useEffect(() => {
-    setShowButton(
-      !(
-        ref.current?.scrollHeight - ref.current?.scrollHeight / 2 <=
-        ref.current?.offsetHeight
-      )
-    );
-  }, [ref]);
-
-  return (
-    <div className={" " + parentClass}>
-      <p
-        ref={ref}
-        className={className}
-        style={{
-          height: show ? "100%" : leading * lines + "px",
-          overflow: show ? "unset" : "hidden",
-        }}
-      >
-        {text}
-      </p>
-      {showButton && (
-        <span
-          onClick={() => setShow((p) => !p)}
-          style={{ float: "inline-end" }}
-          className="cursor-pointer text-xs h-3 mr-2 text-slate-500"
-        >
-          {show ? "less" : "more..."}
-        </span>
-      )}
-    </div>
   );
 };
