@@ -101,11 +101,12 @@ app.get("*", (req, res) => {
 app.use(errorBoundary);
 
 app.listen(process.env.PORT, () => {
-  console.log("Server started!");
+  console.log("Server started");
   turnOnSocket().on("response", () => {
-    console.log("Socket Turned ON!!!");
-
+    console.log("Socket turned on");
     connectDB().then(() => {
+      console.log("DB connected");
+
       // Comment.deleteMany().then(() => console.log("Comment dropped!"));
       // Message.deleteMany().then(() => console.log("Message dropped!"));
       // Conversation.deleteMany().then(() =>

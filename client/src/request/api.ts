@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { userHandler } from "../helpers";
 
 const baseURL = process.env.REACT_APP_API_URL;
@@ -43,10 +43,17 @@ instance.interceptors.response.use(
         const { access_token, ...user } = res.data;
         userHandler.setToken(access_token);
 
-        return instance.request(err.config);
+        return await instance.request(err.config);
       } catch (error) {
-        console.log(error);
-        throw error;
+        if (
+          error instanceof AxiosError &&
+          error?.response?.data?.status === 401
+        ) {
+          window.open("/auth/login", "_self");
+        } else {
+          console.log(error);
+          throw error;
+        }
       }
     } else if (err?.response?.data?.status === 401) {
       window.open(`${window.location.origin}/auth/login`, "_self");
