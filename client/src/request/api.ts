@@ -58,13 +58,14 @@ instance.interceptors.response.use(
       }
     } else if (err?.response?.data?.status === 401) {
       window.open(`${window.location.origin}/auth/login`, "_self");
-    } else if (err instanceof AxiosError && err.message === "Network Error") {
-      if (reloadCount !== 3) {
-        window.location.reload();
-        reloadCount++;
-        console.log(err);
-      }
+    } else if (
+      err instanceof AxiosError &&
+      err?.config?.url?.includes("refresh") &&
+      err.message === "Network Error"
+    ) {
+      window.open(`${window.location.origin}/`, "_self");
     }
+
     console.log(err);
     throw err;
   }
