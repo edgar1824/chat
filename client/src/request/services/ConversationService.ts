@@ -18,25 +18,21 @@ type IData = IService<{
 
 export class ConversationService {
   static #route: string = "conversations";
-
   static async create(data: IData["model"]) {
     const formData = formFn.toFormData({ ...data });
     const res = await instance.post<IData["model"]>(this.#route, formData);
     socket.emit("create-conversation", { ...res.data });
-    return redirect(`/chat/${res.data?._id}`);
+    return res;
   }
-
   static async createDialogue({ id }: { id?: string }) {
     const conv = await instance.post("conversations/to-dialogue", {
       friendId: id,
     });
-    console.log(conv);
     if (conv.data?.new) {
       socket.emit("create-conversation", conv.data);
     }
     return redirect(`/chat/${conv.data?._id}`);
   }
-
   static async delete({
     conversationId,
     members,
@@ -44,11 +40,11 @@ export class ConversationService {
     conversationId: string;
     members: string;
   }) {
-    await instance.delete(`${this.#route}/${conversationId}`);
+    const res = await instance.delete(`${this.#route}/${conversationId}`);
+    console.log(res);
     socket.emit("delete-conversation", conversationId, members);
     return redirect("/chat");
   }
-
   static async addUser({
     id,
     currentConv,
@@ -80,7 +76,6 @@ export class ConversationService {
     });
     return { ...res, message: "User added succesfully" };
   }
-
   static async deleteUser({
     id,
     members,
@@ -111,7 +106,6 @@ export class ConversationService {
     });
     return { message: "User removed succesfully", ...res };
   }
-
   static async edit({
     conversationId,
     formData,
@@ -126,7 +120,6 @@ export class ConversationService {
     socket.emit("edit-conversation", res.data);
     return { message: "Edited succesfully", ...res };
   }
-
   static async leave({
     conversationId,
     members,
@@ -159,7 +152,6 @@ export class ConversationService {
     });
     return redirect("/chat");
   }
-
   static async setAdmin({
     conversationId,
     userId,
@@ -175,7 +167,6 @@ export class ConversationService {
     );
     return { message: "User changed to admin", ...res };
   }
-
   static async unsetAdmin({
     conversationId,
     userId,
@@ -189,7 +180,6 @@ export class ConversationService {
     );
     return { message: "Admin changed to user", ...res };
   }
-
   static async setLastMessage(convId?: string) {
     const res = await instance.put(`${this.#route}/last-message/${convId}`);
     return res.data;

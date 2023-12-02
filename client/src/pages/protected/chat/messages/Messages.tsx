@@ -40,7 +40,6 @@ const loader = routeActionHandler(async ({ params: { conversationId } }) => {
   const convUsers = await instance.get(
     `conversations/current-users/${conversationId}`
   );
-
   return {
     messages: currentMessages.data,
     currentConv: currentConv.data,

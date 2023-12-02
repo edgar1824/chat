@@ -13,17 +13,14 @@ export const LikeButton: FC<Props> = (props) => {
   const { setError } = useAppContext();
   const [post, setPost] = useState<IPost<IUser>>({ ...props });
   const [load, setLoad] = useState(false);
-  const likeClickHandler = async (role: "add-like" | "delete-like") => {
+  const likeClickHandler = async () => {
     setLoad(true);
-
     try {
       if (post.hasMyLike) {
         const res = await PostService.deleteLike<IUser>(post?._id!);
-        console.log(res);
         setPost(res.data);
       } else {
         const res = await PostService.addLike<IUser>(post?._id!);
-        console.log(res);
         setPost(res.data);
       }
     } catch (err) {
@@ -34,21 +31,25 @@ export const LikeButton: FC<Props> = (props) => {
     }
   };
   return (
-    <div className="flex items-center gap-1 shrink-0 md:gap-0">
+    <div className="flex items-center gap-1 shrink-0">
       <Load {...{ load }}>
         <FontAwesomeIcon
-          onClick={() => likeClickHandler("add-like")}
+          onClick={() => likeClickHandler()}
           icon={faThumbsUp}
           color={post?.hasMyLike ? "red" : "gray"}
-          className="cursor-pointer md:w-10 md:h-6"
+          className="w-6 h-6 cursor-pointer md:w-5 md:h-5"
         />
       </Load>
       {!!post?.peopleLiked?.length && (
         <div className="flex items-center ml-[10px] shrink-0">
           {post?.peopleLiked?.map((s, i) => (
-            <div key={i} style={{ zIndex: 4 - i }} className="ml-[-10px]">
+            <div
+              key={i}
+              style={{ zIndex: post?.peopleLiked?.length! + 1 - i }}
+              className="w-6 h-6 shrink-0 shadow-[0_0px_3px_1px_rgb(0_0_0_/_37%)] overflow-hidden rounded-full ml-[-10px] md:w-5 md:h-5 md:ml-[-8px]"
+            >
               <img
-                className="w-7 h-7 rounded-full shadow-lg object-fill shrink-0"
+                className="w-full h-full object-fill"
                 src={s || PROFILE_IMG}
                 alt=""
               />
@@ -56,8 +57,12 @@ export const LikeButton: FC<Props> = (props) => {
           ))}
         </div>
       )}
-      {post?.likes! > 3 && <span> and {post?.likes! - 3} more</span>}
-      {post?.likes! === 0 && <span>0</span>}
+      {post?.likes! > 3 && (
+        <span className="text-xl md:text-base">
+          and {post?.likes! - 3} more
+        </span>
+      )}
+      {post?.likes! === 0 && <span className="text-xl md:text-base">0</span>}
     </div>
   );
 };

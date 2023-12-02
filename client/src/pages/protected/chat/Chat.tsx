@@ -1,6 +1,6 @@
 import { ChatProvider } from "contexts";
 import { formFn, routeActionHandler } from "helpers";
-import { Outlet } from "react-router-dom";
+import { Outlet, redirect } from "react-router-dom";
 import { ConversationService } from "request/services";
 import instance from "request/api";
 import { ChatBar } from "./ChatBar";
@@ -43,10 +43,11 @@ const action = routeActionHandler(async ({ request }) => {
 
   switch (data.role) {
     case "create-group":
-      return await ConversationService.create({
+      const res = await ConversationService.create({
         ...data,
         members: data?.members,
       });
+      return redirect(`/chat/${res.data?._id}`);
     default:
       return null;
   }

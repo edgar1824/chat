@@ -4,22 +4,32 @@ import { Modal, OutsideDetector } from "components/reusable";
 import { useAuthContext, useChatContext } from "contexts";
 import { sortByUpDate } from "helpers";
 import { useEffect, useState } from "react";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import {
+  redirect,
+  useActionData,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+  useNavigation,
+} from "react-router-dom";
 import { socket } from "socket";
+import { IConv, IMessage, IUser } from "types";
+import { IChatLoaderData } from "../Chat";
 import { Conversation, New } from "./blocks";
 import styles from "./conversations.module.css";
-import { IChatLoaderData } from "../Chat";
-import { IConv, IMessage, IUser } from "types";
 
 export const Conversations = () => {
   const { onlineUsers, me } = useAuthContext();
   const { show, setShow, closeChatBar } = useChatContext();
   const { conversations } = useLoaderData() as IChatLoaderData;
+  const navigate = useNavigate();
+  const navigation = useNavigation();
+  const location = useLocation();
+  const actionData = useActionData();
   const [convs, setConvs] = useState<
     IConv<string[], string[], IMessage<IUser, string[]>>[]
   >(conversations || []);
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate();
   const handleClose = () => setOpen(false);
 
   useEffect(() => {
@@ -46,7 +56,6 @@ export const Conversations = () => {
         })
       );
     };
-
     const getConvs = (
       data?: IConv<string[], string[], IMessage<IUser, string[]>>[]
     ) => {
@@ -61,13 +70,25 @@ export const Conversations = () => {
         }))
       );
     };
+
+    socket.on("get-conversations", getConvs);
+    socket.on("conversation-members", checkConvs);
+    return () => {
+      socket.off("conversation-members", checkConvs);
+      socket.off("get-conversations", getConvs);
+    };
+  }, [onlineUsers]);
+
+  useEffect(() => {
     const deleteConv = (convId?: string) => {
       setConvs((p) => p.filter((conv) => conv._id !== convId));
-      if (window.location.pathname.includes(`/chat/${convId}`)) {
+      if (
+        location.pathname.includes(`/chat/${convId}`) &&
+        navigation.state === "idle"
+      ) {
         navigate("/chat");
       }
     };
-
     const getEditedConv = (
       conv: IConv<string[], string[], IMessage<IUser, string[]>>
     ) => {
@@ -75,16 +96,19 @@ export const Conversations = () => {
     };
 
     socket.on("edited-conversation", getEditedConv);
-    socket.on("get-conversations", getConvs);
     socket.on("removed-conversation", deleteConv);
-    socket.on("conversation-members", checkConvs);
     return () => {
       socket.off("edited-conversation", getEditedConv);
-      socket.off("conversation-members", checkConvs);
-      socket.off("get-conversations", getConvs);
       socket.off("removed-conversation", deleteConv);
     };
-  }, [onlineUsers]);
+  }, [location, navigation.state]);
+
+  useEffect(() => {
+    if (actionData) {
+      handleClose();
+      console.log(123);
+    }
+  }, [actionData]);
 
   return (
     <>

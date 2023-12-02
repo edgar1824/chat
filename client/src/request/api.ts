@@ -3,6 +3,7 @@ import { userHandler } from "../helpers";
 
 const baseURL = process.env.REACT_APP_API_URL;
 
+let reloadCount = 0;
 const instance = axios.create({
   baseURL,
   withCredentials: true,
@@ -57,6 +58,12 @@ instance.interceptors.response.use(
       }
     } else if (err?.response?.data?.status === 401) {
       window.open(`${window.location.origin}/auth/login`, "_self");
+    } else if (err instanceof AxiosError && err.message === "Network Error") {
+      if (reloadCount !== 3) {
+        window.location.reload();
+        reloadCount++;
+        console.log(err);
+      }
     }
     console.log(err);
     throw err;

@@ -105,8 +105,6 @@ app.listen(process.env.PORT, () => {
   turnOnSocket().on("response", () => {
     console.log("Socket turned on");
     connectDB().then(() => {
-      console.log("DB connected");
-
       // Comment.deleteMany().then(() => console.log("Comment dropped!"));
       // Message.deleteMany().then(() => console.log("Message dropped!"));
       // Conversation.deleteMany().then(() =>

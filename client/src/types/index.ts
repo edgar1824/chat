@@ -46,7 +46,7 @@ export interface IConv<
 > extends DBDocument {
   members?: TMembers;
   type?: "group" | "dialogue";
-  img?: string;
+  img?: string | [string, string];
   title?: string | string[];
   admins?: TAdmins;
   lastMessage?: TMessage;
@@ -63,6 +63,7 @@ export interface IPost<T extends IUser | string = string> extends DBDocument {
   hasMyLike?: boolean;
   haveWatched?: boolean;
   peopleLiked?: string[];
+  commentCount?: number;
 }
 export interface IComment<TUser extends IUser | string = string>
   extends DBDocument {

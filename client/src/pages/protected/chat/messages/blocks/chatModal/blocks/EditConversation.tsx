@@ -16,7 +16,7 @@ export const EditConversation = () => {
     img: File | string;
     title: string | string[];
   }>({
-    img: currentConv?.img || "",
+    img: (currentConv?.img as string) || "",
     title: currentConv?.title || "",
   });
 

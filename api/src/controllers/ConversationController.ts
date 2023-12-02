@@ -122,10 +122,12 @@ class ConversationController {
   };
   static getUsersOfConversation: RequestHandler = async (req, res, next) => {
     try {
-      const friends = await ConversationService.getUsersOfConversation(
-        req.params.conversationId
+      const users = await ConversationService.get(
+        { _id: req.params.conversationId },
+        {},
+        { populate: { path: "members", select: "-password -isAdmin" } }
       );
-      res.status(200).json(friends);
+      res.status(200).json(users.members);
     } catch (err) {
       next(err);
     }
@@ -195,6 +197,7 @@ class ConversationController {
         members: [req.body.friendId, req?._user?._id],
         title: [friend.username, me?.username],
         type: "dialogue",
+        img: [me.img, friend.img],
       });
 
       return res.status(200).json({

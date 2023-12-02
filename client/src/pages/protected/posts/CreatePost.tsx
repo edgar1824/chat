@@ -3,7 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CstmTextarea, CustomBtn } from "components/forms";
 import { formFn, routeActionHandler } from "helpers";
 import { FormEvent, useCallback, useEffect, useState } from "react";
-import { useActionData, useFormAction, useSubmit } from "react-router-dom";
+import {
+  redirect,
+  useActionData,
+  useFormAction,
+  useSubmit,
+} from "react-router-dom";
 
 import { Container } from "components/reusable";
 import { useId } from "react";
@@ -12,6 +17,7 @@ import { PostService } from "request/services";
 import plus_img from "assets/images/plus.png";
 import { AxiosResponse } from "axios";
 import { IPost } from "types";
+import path from "path";
 
 const Component = () => {
   const submit = useSubmit();
@@ -111,7 +117,7 @@ const Component = () => {
 
 const action = routeActionHandler(async ({ data }) => {
   const res = await PostService.create(data);
-  return res;
+  return redirect(`/posts/${res.data._id!}`);
 }, true);
 
 export const CreatePost = Object.assign(Component, { action });

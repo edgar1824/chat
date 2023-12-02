@@ -94,6 +94,7 @@ class UserController {
     try {
       const { username, img, city, email, phone, friends, _id, country } =
         await UserService.get(req?._user?._id);
+
       res
         .status(200)
         .json({ username, img, city, email, phone, friends, _id, country });

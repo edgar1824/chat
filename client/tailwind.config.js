@@ -6,6 +6,7 @@ module.exports = {
       screens: {
         lg: { max: "1000px" },
         md: { max: "770px" },
+        sm: { max: "450px" },
       },
       backgroundImage: {
         slide:

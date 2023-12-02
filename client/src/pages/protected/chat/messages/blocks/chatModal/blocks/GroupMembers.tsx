@@ -18,6 +18,7 @@ import {
 } from "react-router-dom";
 import { IMessagesLoaderData } from "../../../Messages";
 import { iSocketUser, IUser } from "types";
+import { PROFILE_IMG } from "constants/profile";
 
 export const GroupMembers = () => {
   const { me } = useAuthContext();
@@ -49,7 +50,11 @@ const User = ({
       <div className="flex items-center justify-between gap-3 w-full cursor-pointer px-5 py-3 rounded shadow-cst bg-white">
         <div className="flex items-center gap-3">
           <Link to={`/users/${_id}`} className="flex items-center gap-3 ">
-            <img src={img} alt="" className="w-[30px] h-[30px] rounded-full" />
+            <img
+              src={img || PROFILE_IMG}
+              alt=""
+              className="w-[30px] h-[30px] rounded-full"
+            />
             <span>{username}</span>
           </Link>
           {currentConv?.admins?.includes(_id!) && (

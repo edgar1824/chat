@@ -48,13 +48,4 @@ router.delete("/:convId", verifyToken, ConversationController.delete);
 // TO DIALOGUE
 router.post("/to-dialogue", verifyToken, ConversationController.toDialogue);
 
-// ####################################
-// ##### DELETE AFTER DEVELOPMENT #####
-// ####################################
-
-router.delete("/", async (req, res, next) => {
-  const d = await Conversation.deleteMany();
-  res.status(200).json({ message: "Conversations has been deleted" });
-});
-
 export default router;

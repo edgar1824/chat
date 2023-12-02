@@ -1,5 +1,5 @@
 import mongoose, { Types } from "mongoose";
-import { IMe } from "../types/index.js";
+import { IFind, IMe } from "../types/index.js";
 import { createError } from "../helpers/createError.js";
 import Conversation, { IConversation } from "../models/Conversation.js";
 import { MessageService } from "./MessageService.js";
@@ -28,11 +28,15 @@ export class ConversationService {
         messages.map((m) => MessageService.delete({ _id: m?._id }))
       );
     }
-    UploadService.delete(conv?.img);
+    if (Array.isArray(conv?.img)) {
+      UploadService.delete(...(conv?.img as [string, string]));
+    } else {
+      UploadService.delete(conv?.img);
+    }
     await conv.deleteOne();
     return conv;
   };
-  static get = async (...options) => {
+  static get = async (...options: IFind<IConversation>) => {
     const conv = await Conversation.findOne(...options);
     return conv;
   };
@@ -46,7 +50,9 @@ export class ConversationService {
     values?: Partial<IConversation>;
   }) => {
     const conv = await Conversation.findOne({ _id: id });
-    if (values?.img && values.img !== conv?.img) UploadService.delete(conv.img);
+    if (values?.img && values.img !== conv?.img)
+      UploadService.delete(conv.img as string);
+
     const newConv = await Conversation.findOneAndUpdate(
       { _id: id },
       { $set: { ...values } },
@@ -81,13 +87,6 @@ export class ConversationService {
     });
 
     return conv;
-  };
-  static getUsersOfConversation = async (conversationId) => {
-    const conv = await this.get({ _id: conversationId });
-    const users = await Promise.all(
-      conv.members.map((member) => UserService.getPrivate(member))
-    );
-    return users;
   };
   static check = async (members, type) => {
     const cand = await Conversation.findOne({ members: [...members], type });

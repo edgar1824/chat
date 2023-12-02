@@ -1,5 +1,5 @@
 import { Hint } from "components/reusable";
-import { Outlet, useNavigation } from "react-router-dom";
+import { Outlet, ScrollRestoration, useNavigation } from "react-router-dom";
 import { Loading } from "../main";
 import { useAppContext } from "contexts";
 
@@ -12,6 +12,7 @@ export const Root = () => {
       <Outlet />
       {allowedLoading && state !== "idle" && <Loading />}
       <Hint />
+      <ScrollRestoration />
     </>
   );
 };

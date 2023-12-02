@@ -2,7 +2,8 @@ import { Document, Types } from "mongoose";
 import { createError } from "../helpers/createError.js";
 import { PostService, UserService } from "../services/index.js";
 import { RequestHandler } from "../types/index.js";
-import { IPost } from "models/Post.js";
+import { IPost } from "../models/Post.js";
+import { CommentService } from "../services/CommentService.js";
 
 const convertToResp = async (
   post: Document<unknown, {}, IPost> &
@@ -16,9 +17,11 @@ const convertToResp = async (
       _id: { $in: post.likes.slice(0, 3).map((e) => e.toString()) },
     })
   ).map((u) => u?.img);
+  const commentCount = await CommentService.getMany({ postId: post._id });
   const result = {
     ...post,
     peopleLiked,
+    commentCount: commentCount.length,
     likes: post.likes.length,
     watched: post.watched.length,
     hasMyLike: post.likes
@@ -64,7 +67,7 @@ class PostController {
       const post = await PostService.getOne(
         { _id: req.params.id },
         {},
-        { lean: true }
+        { lean: true, populate: { path: "user", select: "username img _id" } }
       );
 
       res.status(200).json(await convertToResp(post, req));

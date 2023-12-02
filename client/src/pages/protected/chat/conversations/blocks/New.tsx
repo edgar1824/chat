@@ -10,7 +10,7 @@ export const New = () => {
   const submit = useSubmit();
   const action = useFormAction();
   const { me } = useAuthContext();
-  const { friends, handleClose } = useChatContext();
+  const { friends } = useChatContext();
   const [values, setValues] = useState<{
     members: string[];
     title?: string;

@@ -15,8 +15,11 @@ export const fileUploading: RequestHandler = (req, res, next) => {
       Object.entries(req.files).forEach(
         ([key, file]: [string, UploadedFile]) => {
           const name = `${uuidv4()}${path.extname(file.name)}`;
-          const uploadPath = path.join(__dirname, "public", name);
-          const httpName = path.join(process.env.API_URL, "public", name);
+          const uploadPath = `${__dirname}/${path.join("public", name)}`;
+          const httpName = `${process.env.API_URL}/${path.join(
+            "public",
+            name
+          )}`;
           file.mv(uploadPath, (err) => {
             if (err) return next(err);
           });

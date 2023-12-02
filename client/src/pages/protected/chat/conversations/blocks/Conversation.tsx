@@ -1,4 +1,5 @@
 import { AnimatedDots } from "components/reusable";
+import { PROFILE_IMG } from "constants/profile";
 import { useAppContext, useAuthContext } from "contexts";
 import { useEffect, useState } from "react";
 import { useNavigate, useNavigation, useParams } from "react-router-dom";
@@ -43,7 +44,6 @@ export const Conversation = ({
   useEffect(() => {
     const getSocketLastMessage = (convId: string, message: IMessage) => {
       if (convId === _id) {
-        // setLMessaage((p) => ({ ...p, ...message, userId: message?.sender }));
         setLMessaage((p) => ({ ...p, userId: message?.sender }));
       }
     };
@@ -78,7 +78,6 @@ export const Conversation = ({
         }
       }
     };
-
     socket.on("deleted-message", checkLastMessage);
     return () => {
       socket.off("deleted-message", checkLastMessage);
@@ -95,7 +94,14 @@ export const Conversation = ({
       <div className="flex items-center gap-5 md:gap-3">
         <img
           className="w-[80px] h-[80px] rounded-full md:w-[50px] md:h-[50px]"
-          src={img || "https://cdn-icons-png.flaticon.com/512/25/25437.png"}
+          src={
+            type === "dialogue" && Array.isArray(img)
+              ? !me?.img
+                ? img.filter(Boolean)[0]
+                : img?.find((i) => i !== me?.img) || PROFILE_IMG
+              : (img as string) ||
+                "https://cdn-icons-png.flaticon.com/512/25/25437.png"
+          }
           alt=""
         />
         <div className="flex flex-col gap-3">

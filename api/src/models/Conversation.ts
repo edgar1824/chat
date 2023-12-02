@@ -4,7 +4,7 @@ export interface IConversation {
   _id: Types.ObjectId;
   members: Types.ObjectId[];
   type: "group" | "dialogue";
-  img: string;
+  img: string | [string, string];
   title: string | string[];
   admins: Types.ObjectId[];
   lastMessage: Types.ObjectId;
@@ -22,7 +22,7 @@ const ConversationSchema = new mongoose.Schema(
       default: "dialogue",
       required: true,
     },
-    img: String,
+    img: mongoose.Schema.Types.Mixed,
     title: mongoose.Schema.Types.Mixed,
     admins: { type: [mongoose.Schema.Types.ObjectId] },
     lastMessage: {

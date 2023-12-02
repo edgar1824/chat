@@ -1,26 +1,31 @@
-import {
-  faComment,
-  faEye,
-  faThumbsUp,
-} from "@fortawesome/free-solid-svg-icons";
+import { faComment, faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { CstmInput, CustomBtn } from "components/forms";
+import { LikeButton, WatchedEye } from "components/main";
+import { CenterText } from "components/reusable";
+import { PROFILE_IMG } from "constants/profile";
+import { useAuthContext } from "contexts";
 import { classes, formFn, routeActionHandler, timeDifference } from "helpers";
-import { FC, FormEvent, useEffect, useRef, useState } from "react";
-import { IComment, IPost, IUser } from "types";
+import { useMedia } from "hooks";
 import {
-  useActionData,
+  FC,
+  FormEvent,
+  MutableRefObject,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import {
+  Link,
   useFormAction,
   useLoaderData,
+  useLocation,
   useNavigation,
   useParams,
   useSubmit,
 } from "react-router-dom";
 import { CommentService, PostService } from "request/services";
-import { CstmInput, CustomBtn } from "components/forms";
-import { PROFILE_IMG } from "constants/profile";
-import { useAuthContext } from "contexts";
-import { CenterText } from "components/reusable";
-import { LikeButton } from "components/main";
+import { IComment, IPost, IUser } from "types";
 
 interface ILoaderData {
   post: IPost<IUser>;
@@ -28,88 +33,64 @@ interface ILoaderData {
 }
 
 const Component: FC = () => {
-  const submit = useSubmit();
-  const action = useFormAction();
-  const actionData = useActionData();
-  const navigation = useNavigation();
   const { post, comments } = useLoaderData() as ILoaderData;
-  const [watched, setwatched] = useState(post?.watched);
+  const location = useLocation();
   const [showComments, setShowComments] = useState(false);
-
-  const likeClickHandler = () => {
-    submit(
-      formFn.toFormData({
-        postId: post?._id,
-        role: post?.hasMyLike ? "delete-like" : "add-like",
-      }),
-      {
-        action,
-        encType: "multipart/form-data",
-        method: "PUT",
-      }
-    );
-  };
+  const commentsRef = useRef<HTMLDivElement>(null!);
+  const media770 = useMedia(770);
 
   useEffect(() => {
-    setwatched(post?.watched);
-  }, [post?.watched]);
+    if (!!location.state?.openComments) {
+      setShowComments(true);
+    }
+  }, [location, commentsRef.current]);
+
+  useEffect(() => {
+    if (!!location.state?.openComments && commentsRef.current) {
+      setTimeout(() => {
+        console.log(123);
+        commentsRef.current.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    }
+  }, [showComments, commentsRef.current]);
 
   return (
     <div className="flex gap-5 py-5 w-full h-screen md:h-auto md:flex-col md:mt-5 md:min-h-[90vh]">
       <img
-        className="w-[40%] md:w-full md:self-center md:px-2 md:h-[60vh] md:border md:border-[rgb(186_186_186)] md:object-contain md:max-w-[500px]"
+        className="bg-slate-100 object-contain w-[40%] md:w-full md:self-center md:px-2 md:h-[60vh] md:border md:border-[rgb(186_186_186)] md:max-w-[500px]"
         src={post?.img}
         alt=""
       />
       <div className="flex-[6] flex flex-col gap-10 h-full md:px-2">
-        <div className="flex flex-col gap-1 md:gap-5">
+        <div className="flex flex-col gap-1 md:gap-2">
+          <Link
+            to={`/users/${post.user?._id}`}
+            className="flex items-center gap-4"
+          >
+            <img
+              src={post.user?.img || PROFILE_IMG}
+              className="w-16 h-16 rounded-full shadow-lg md:w-12 md:h-12"
+              alt=""
+            />
+            <p className="text-2xl font-semibold md:text-xl">
+              {post.user?.username}
+            </p>
+          </Link>
           <p>{post?.desc}</p>
           <div className="flex flex-col md:text-xl md:gap-2">
             <div className="flex gap-5">
               <LikeButton {...post} />
-              {/* <div className="flex items-center gap-1 shrink-0 md:gap-0">
-                <Load {...{ _id: post?._id }}>
-                  <FontAwesomeIcon
-                    onClick={likeClickHandler}
-                    icon={faThumbsUp}
-                    color={post?.hasMyLike ? "red" : "gray"}
-                    className="cursor-pointer md:w-10 md:h-6"
-                  />
-                </Load>
-                {!!post.peopleLiked?.length && (
-                  <div className="flex items-center ml-[10px] shrink-0">
-                    {post.peopleLiked?.map((s, i) => (
-                      <div
-                        key={i}
-                        style={{ zIndex: 4 - i }}
-                        className="ml-[-10px]"
-                      >
-                        <img
-                          className="w-7 h-7 rounded-full shadow-lg object-fill shrink-0"
-                          src={s || PROFILE_IMG}
-                          alt=""
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {post?.likes! > 3 && <span> and {post?.likes! - 3} more</span>}
-                {post?.likes! === 0 && <span>0</span>}
-              </div> */}
-              <div className="flex items-center gap-1 md:gap-0">
-                <FontAwesomeIcon
-                  className=" md:w-10 md:h-6"
-                  icon={faEye}
-                  color="gray"
-                />
-                {watched}
-              </div>
-              <div className="flex items-center gap-1 md:gap-0">
+              <WatchedEye
+                _id={post._id!}
+                haveWatched={post.haveWatched!}
+                watched={post.watched!}
+              />
+              <div className="flex items-center gap-1 text-xl md:text-base">
                 <FontAwesomeIcon
                   onClick={() => setShowComments((p) => !p)}
                   icon={faComment}
                   color="gray"
-                  className="cursor-pointer md:w-10 md:h-6"
+                  className="w-6 h-6 cursor-pointer md:w-5 md:h-5"
                 />
                 {comments.length}
               </div>
@@ -119,18 +100,20 @@ const Component: FC = () => {
             </span>
           </div>
         </div>
-        {showComments && <CommentsBlock />}
+        {(showComments || !media770) && <CommentsBlock {...{ commentsRef }} />}
       </div>
     </div>
   );
 };
 
-const CommentsBlock: FC = () => {
+const CommentsBlock: FC<{ commentsRef: MutableRefObject<HTMLDivElement> }> = ({
+  commentsRef,
+}) => {
   const { comments } = useLoaderData() as ILoaderData;
   const { me } = useAuthContext();
 
   return (
-    <div className="flex flex-col gap-5 flex-[1]">
+    <div ref={commentsRef} className="flex flex-col gap-5 flex-[1]">
       <div className="min-h-[200px] shadow-[0_5px_20px_5px_rgb(0_0_0_/_0.1)] relative flex flex-col gap-3 flex-[1] overflow-y-auto max-h-[calc(100vh_-_270px)] py-5 pr-2 md:py-2">
         {!!comments.length ? (
           comments?.map(({ desc, comentatorId, _id }) => (
@@ -149,7 +132,7 @@ const CommentsBlock: FC = () => {
               >
                 <img
                   src={comentatorId?.img || PROFILE_IMG}
-                  className="w-8 h-8"
+                  className="w-8 h-8 rounded-full shadow-2xl"
                   alt=""
                 />
                 <span>{comentatorId?.username}</span>
@@ -201,9 +184,14 @@ const AddComment: FC = () => {
   };
   return (
     <form onSubmit={commentPostHandler}>
-      <div className="grid grid-cols-[auto_80px] items-center gap-3">
+      <div className="grid grid-cols-[auto_80px] items-center gap-3 md:gap-0">
         <CstmInput myRef={inputRef} name="text" placeholder="Add Comment!" />
-        <CustomBtn className="!min-h-full text-center">SEND</CustomBtn>
+        <CustomBtn
+          type="submit"
+          className="!min-h-full text-center md:!rounded-l-none"
+        >
+          SEND
+        </CustomBtn>
       </div>
     </form>
   );
