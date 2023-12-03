@@ -8,14 +8,12 @@ import {
   messageEvents,
   notificationEvents,
 } from "./events/index.js";
-import http from "http";
+import { createServer } from "http";
 import https from "https";
 
 const userStore = new UserStore();
 // const server = https.createServer((req, res) => {
-const server = http.createServer((req, res) => {
-  console.log(process.env.CLIENT_URL, 111);
-
+const server = createServer((req, res) => {
   res.setHeader("Access-Control-Allow-Origin", process.env.CLIENT_URL);
   res.setHeader(
     "Access-Control-Allow-Methods",
@@ -23,7 +21,7 @@ const server = http.createServer((req, res) => {
   );
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.setHeader("Access-Control-Allow-Credentials", "true");
-  
+
   switch (req.url) {
     case "/check": {
       res.setHeader("Content-Type", "application/json");
