@@ -29,6 +29,6 @@ export class NotificationService {
       `${this.#route}/in-box`,
       config
     );
-    return res.data;
+    return res;
   }
 }

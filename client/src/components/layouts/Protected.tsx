@@ -41,7 +41,7 @@ const loader = routeActionHandler(async () => {
     const myInfo = await AuthService.getMyInfo();
     const friends = await UserService.getFriends();
 
-    return { notifs, myInfo, friends };
+    return { notifs: notifs.data, myInfo, friends };
   } catch (err: any) {
     // if (
     //   err?.config?.url === "users/my-info" &&
