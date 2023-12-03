@@ -8,6 +8,7 @@ import {
 } from "request/services";
 import { Loading, Navbar } from "../main";
 import { ReactNode } from "react";
+import instance from "request/api";
 
 const Component = () => {
   return (
@@ -40,6 +41,9 @@ const loader = routeActionHandler(async () => {
     const notifs = await NotificationService.getNotifs();
     const myInfo = await AuthService.getMyInfo();
     const friends = await UserService.getFriends();
+
+    const res = await instance.get("http://localhost:4000/check");
+    console.log(res);
 
     return { notifs: notifs.data, myInfo, friends };
   } catch (err: any) {
