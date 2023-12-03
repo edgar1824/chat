@@ -11,32 +11,38 @@ import {
 import http from "http";
 
 const userStore = new UserStore();
-const server = http
-  .createServer((req, res) => {
-    switch (req.url) {
-      case "/check": {
-        res.setHeader("Access-Control-Allow-Origin", process.env.API_URL);
-        res.setHeader("Content-Type", "application/json");
+const server = http.createServer((req, res) => {
+  switch (req.url) {
+    case "/check": {
+      res.setHeader("Access-Control-Allow-Origin", process.env.CLIENT_URL);
+      res.setHeader(
+        "Access-Control-Allow-Methods",
+        "OPTIONS, POST, GET, PUT, DELETE"
+      );
+      res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+      res.setHeader("Access-Control-Allow-Credentials", "true");
+      res.setHeader("Content-Type", "application/json");
 
-        res.statusCode = 200;
-        res.end(JSON.stringify({ connected: true }));
-        break;
-      }
-      default: {
-        res.end("Socket server connected");
-        break;
-      }
+      res.statusCode = 200;
+      res.end(JSON.stringify({ connected: true }));
+      break;
     }
-  })
-  .listen(4000, () => {
-    console.log("Socket Server Connected");
-  });
+    default: {
+      res.end("Socket server connected");
+      break;
+    }
+  }
+});
 
 const io = new Server(server, {
   cors: {
     credentials: true,
-    origin: [process.env.CLIENT_URL!],
+    origin: [process.env.CLIENT_URL],
   },
+});
+
+server.listen(4000, () => {
+  console.log("Socket Server Connected");
 });
 
 io.on("connection", (socket) => {
