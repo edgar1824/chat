@@ -24,7 +24,7 @@ export class NotificationService {
     return res.data;
   }
 
-  static async getNotifs(config: AxiosRequestConfig<any> = {}) {
+  static async getNotifs(config: AxiosRequestConfig) {
     const res = await instance.get<Omit<INotif, "recievers" | "sender">>(
       `${this.#route}/in-box`,
       config
