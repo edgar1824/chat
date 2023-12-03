@@ -9,9 +9,13 @@ import {
   notificationEvents,
 } from "./events/index.js";
 import http from "http";
+import https from "https";
+
+const hostname = new URL(process.env.CLIENT_URL!).hostname;
 
 const userStore = new UserStore();
-const server = http.createServer((req, res) => {
+// const server = (hostname === "localhost" ? http : https).createServer((req, res) => {
+const server = https.createServer((req, res) => {
   switch (req.url) {
     case "/check": {
       res.setHeader("Access-Control-Allow-Origin", process.env.CLIENT_URL);
