@@ -11,22 +11,14 @@ import {
 import http from "http";
 import https from "https";
 
-const hostname = new URL(process.env.CLIENT_URL!).hostname;
-
 const userStore = new UserStore();
-// const server = (hostname === "localhost" ? http : https).createServer((req, res) => {
-const server = https.createServer((req, res) => {
+// const server = https.createServer((req, res) => {
+const server = http.createServer((req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
   switch (req.url) {
     case "/check": {
-      res.setHeader("Access-Control-Allow-Origin", process.env.CLIENT_URL);
-      res.setHeader(
-        "Access-Control-Allow-Methods",
-        "OPTIONS, POST, GET, PUT, DELETE"
-      );
-      res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-      res.setHeader("Access-Control-Allow-Credentials", "true");
       res.setHeader("Content-Type", "application/json");
-
       res.statusCode = 200;
       res.end(JSON.stringify({ connected: true }));
       break;
