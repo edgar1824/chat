@@ -31,7 +31,7 @@ instance.interceptors.response.use(
   (config) => {
     const data = config.data;
     if (data?.access_token) {
-      userHandler.setToken(config.data.access_token);
+      userHandler.setToken(data.access_token);
     }
     return config;
   },
@@ -41,7 +41,7 @@ instance.interceptors.response.use(
         const res = await axios.get(`${baseURL}auth/refresh`, {
           withCredentials: true,
         });
-        const { access_token, ...user } = res.data;
+        const { access_token } = res.data;
         userHandler.setToken(access_token);
 
         return await instance.request(err.config);
@@ -57,13 +57,7 @@ instance.interceptors.response.use(
         }
       }
     } else if (err?.response?.data?.status === 401) {
-      window.open(`${window.location.origin}/auth/login`, "_self");
-    } else if (
-      err instanceof AxiosError &&
-      err?.config?.url?.includes("refresh") &&
-      err.message === "Network Error"
-    ) {
-      window.open(`${window.location.origin}/`, "_self");
+      window.open(`/auth/login`, "_self");
     }
 
     console.log(err);

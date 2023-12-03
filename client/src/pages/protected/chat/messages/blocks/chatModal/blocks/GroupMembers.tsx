@@ -6,7 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CenterText, OutsideDetector } from "components/reusable";
-import { useAuthContext, useMessagesContext } from "contexts";
+import { useAuthContext, useChatContext, useMessagesContext } from "contexts";
 import { formFn } from "helpers";
 import { useClickOutside } from "hooks";
 import { useEffect, useRef, useState } from "react";

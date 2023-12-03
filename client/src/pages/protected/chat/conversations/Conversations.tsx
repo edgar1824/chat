@@ -5,8 +5,6 @@ import { useAuthContext, useChatContext } from "contexts";
 import { sortByUpDate } from "helpers";
 import { useEffect, useState } from "react";
 import {
-  redirect,
-  useActionData,
   useLoaderData,
   useLocation,
   useNavigate,
@@ -25,7 +23,6 @@ export const Conversations = () => {
   const navigate = useNavigate();
   const navigation = useNavigation();
   const location = useLocation();
-  const actionData = useActionData();
   const [convs, setConvs] = useState<
     IConv<string[], string[], IMessage<IUser, string[]>>[]
   >(conversations || []);
@@ -103,13 +100,6 @@ export const Conversations = () => {
     };
   }, [location, navigation.state]);
 
-  useEffect(() => {
-    if (actionData) {
-      handleClose();
-      console.log(123);
-    }
-  }, [actionData]);
-
   return (
     <>
       <OutsideDetector
@@ -150,7 +140,7 @@ export const Conversations = () => {
         </div>
       </OutsideDetector>
       <Modal {...{ open, handleClose }}>
-        <New />
+        <New {...{ handleClose }} />
       </Modal>
     </>
   );

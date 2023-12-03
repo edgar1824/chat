@@ -22,6 +22,7 @@ export const Leave = () => {
       }),
       { action, encType: "multipart/form-data", method: "put" }
     );
+    handleClose?.();
   };
   return (
     <div className="flex flex-col items-center gap-7">

@@ -1,7 +1,7 @@
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CstmInput, CustomBtn } from "components/forms";
-import { useAuthContext } from "contexts";
+import { useAuthContext, useChatContext } from "contexts";
 import { formFn } from "helpers";
 import { useState } from "react";
 import { useFormAction, useLoaderData, useSubmit } from "react-router-dom";
@@ -9,6 +9,7 @@ import { IMessagesLoaderData } from "../../../Messages";
 
 export const EditConversation = () => {
   const { me } = useAuthContext();
+  const { handleClose } = useChatContext();
   const submit = useSubmit();
   const action = useFormAction();
   const { currentConv } = useLoaderData() as IMessagesLoaderData;
@@ -26,6 +27,7 @@ export const EditConversation = () => {
       encType: "multipart/form-data",
       method: "put",
     });
+    handleClose?.();
   };
   return (
     <div className="flex flex-col gap-5">

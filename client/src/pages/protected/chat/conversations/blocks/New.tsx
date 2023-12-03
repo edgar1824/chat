@@ -3,10 +3,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CstmInput, CustomBtn } from "components/forms";
 import { useAuthContext, useChatContext } from "contexts";
 import { formFn } from "helpers";
-import { FormEvent, useState } from "react";
+import { FC, FormEvent, useState } from "react";
 import { useFormAction, useSubmit } from "react-router-dom";
 
-export const New = () => {
+interface Props {
+  handleClose: () => void;
+}
+
+export const New: FC<Props> = ({ handleClose }) => {
   const submit = useSubmit();
   const action = useFormAction();
   const { me } = useAuthContext();
@@ -42,8 +46,8 @@ export const New = () => {
         type: "group",
         role: "create-group",
       });
-
       submit(fd, { action, encType: "multipart/form-data", method: "post" });
+      handleClose();
     }
   };
 

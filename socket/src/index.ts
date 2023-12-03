@@ -33,6 +33,8 @@ const server = http
   });
 
 const io = new Server(server, {
+  transports: ["websocket", "polling"],
+  allowEIO3: true,
   cors: {
     credentials: true,
     origin: [process.env.CLIENT_URL!],

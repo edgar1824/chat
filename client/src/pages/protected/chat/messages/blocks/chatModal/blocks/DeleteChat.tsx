@@ -14,6 +14,7 @@ export const DeleteChat = () => {
       action,
       method: "DELETE",
     });
+    handleClose?.();
   };
 
   return (
