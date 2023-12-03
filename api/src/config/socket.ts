@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import { createError } from "../helpers/createError.js";
 
-const app_url = new URL(process.env.REACT_APP_CHAT_SOCKET_URL!);
+const app_url = new URL(process.env.SOCKET_URL!);
 
 const options = {
   hostname: app_url.hostname,
