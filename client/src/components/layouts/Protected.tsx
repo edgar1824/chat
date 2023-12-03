@@ -42,9 +42,6 @@ const loader = routeActionHandler(async () => {
     const myInfo = await AuthService.getMyInfo();
     const friends = await UserService.getFriends();
 
-    const res = await instance.get("http://localhost:4000/check");
-    console.log(res);
-
     return { notifs: notifs.data, myInfo, friends };
   } catch (err: any) {
     // if (
