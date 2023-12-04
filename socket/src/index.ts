@@ -8,12 +8,12 @@ import {
   messageEvents,
   notificationEvents,
 } from "./events/index.js";
-import http from "http";
+import https from "https";
 import express from "express";
 
 const userStore = new UserStore();
 const app = express();
-const server = http.createServer(app);
+const server = https.createServer(app);
 const io = new Server(server, {
   cors: {
     credentials: true,
