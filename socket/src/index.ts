@@ -8,24 +8,12 @@ import {
   messageEvents,
   notificationEvents,
 } from "./events/index.js";
-import { createServer } from "https";
+import http from "http";
+import express from "express";
 
 const userStore = new UserStore();
-const server = createServer((req, res) => {
-  switch (req.url) {
-    case "/check": {
-      res.setHeader("Content-Type", "application/json");
-      res.statusCode = 200;
-      res.end(JSON.stringify({ connected: true }));
-      break;
-    }
-    default: {
-      res.end("Socket server connected");
-      break;
-    }
-  }
-});
-
+const app = express();
+const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     credentials: true,
@@ -33,8 +21,8 @@ const io = new Server(server, {
   },
 });
 
-server.listen(4000, () => {
-  console.log("Socket Server Connected");
+app.get("/check", (req, res, next) => {
+  res.json({ connected: true });
 });
 
 io.on("connection", (socket) => {
@@ -58,4 +46,8 @@ io.on("connection", (socket) => {
     io.emit("get-users", userStore.users);
     socket.disconnect();
   });
+});
+
+server.listen(4000, () => {
+  console.log("Socket Server Connected");
 });
