@@ -10,24 +10,19 @@ import {
 } from "./events/index.js";
 import http from "http";
 import express from "express";
-import cors from "cors";
 
 const userStore = new UserStore();
 const app = express();
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 const server = http.createServer(app);
-
-console.log("Server is starting...");
 const io = new Server(server, {
   cors: {
+    origin: "*",
     credentials: true,
-    origin: process.env.CLIENT_URL,
   },
 });
-console.log("Server initialized with CORS configuration");
 
 app.get("/check", (req, res, next) => {
-  res.json({ connected: true });
+  res.status(200).json({ connected: true });
 });
 
 io.on("connection", (socket) => {
