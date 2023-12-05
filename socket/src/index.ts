@@ -8,15 +8,15 @@ import {
   messageEvents,
   notificationEvents,
 } from "./events/index.js";
-import https from "https";
+import http from "http";
 import express from "express";
-import cors from "cors";
+// import cors from "cors";
 
 const userStore = new UserStore();
 const app = express();
-app.use(cors({ credentials: true, origin: process.env.CLIENT_URL }));
+// app.use(cors({ credentials: true, origin: process.env.CLIENT_URL }));
 
-const server = https.createServer(app);
+const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: process.env.CLIENT_URL,
