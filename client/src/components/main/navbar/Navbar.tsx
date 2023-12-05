@@ -15,10 +15,12 @@ import { formFn } from "helpers";
 import { useMedia } from "hooks";
 import {
   Dispatch,
+  MutableRefObject,
   ReactNode,
   SetStateAction,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import {
@@ -35,17 +37,21 @@ import "./navbar.css";
 export const Navbar = () => {
   const { notifs } = useAuthContext();
   const { me } = useAuthContext();
-
   const submit = useSubmit();
   const { state } = useNavigation();
   const { pathname } = useLocation();
 
+  const burgerRef = useRef<HTMLDivElement | null>(null);
   const max770 = useMedia(770);
   const [show, setShow] = useState(false);
 
-  const burgerHandler = useCallback(() => {
-    if (max770) setShow(false);
-  }, [max770, state, show]);
+  const burgerHandler = useCallback(
+    (event: MouseEvent) => {
+      if (max770 && !burgerRef.current?.contains(event.target as Node))
+        setShow(false);
+    },
+    [max770, state, burgerRef]
+  );
 
   useEffect(() => {
     setShow(false);
@@ -54,7 +60,7 @@ export const Navbar = () => {
   return (
     <div className="navbar">
       <div className="navContainer">
-        <Burger {...{ setShow }} />
+        <Burger {...{ setShow, burgerRef }} />
         <OutsideDetector
           className={`md:absolute md:top-[50px] md:max-w-[500px] md:min-w-[300px] md:w-[70%] md:h-[calc(100vh_-_50px)] md:bg-[#9b9be3] md:py-5 md:z-[999] duration-300 ${
             show ? "left-0" : "left-[-100%]"
@@ -150,15 +156,21 @@ const MyLink = ({
 const Burger = ({
   setShow,
   onOutside,
+  burgerRef,
   ...props
 }: {
   setShow: Dispatch<SetStateAction<boolean>>;
   onOutside?: () => void;
+  burgerRef: MutableRefObject<HTMLDivElement | null>;
 }) => {
   return (
-    <OutsideDetector onOutside={onOutside} className="shrink-0">
+    <OutsideDetector
+      onRef={(r) => (burgerRef.current = r.current)}
+      onOutside={onOutside}
+      className="shrink-0"
+    >
       <FontAwesomeIcon
-        onClick={(e) => {
+        onClick={() => {
           setShow((p) => !p);
         }}
         icon={faNavicon}

@@ -71,7 +71,7 @@ const Component = () => {
   }, [values.img, submited]);
 
   return (
-    <Container>
+    <Container className="md:!px-0">
       <form onSubmit={handlSubmit} className="flex flex-col gap-5 md:gap-2">
         <div className="relative w-fit">
           <img

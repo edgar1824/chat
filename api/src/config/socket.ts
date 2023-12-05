@@ -13,7 +13,7 @@ const options = {
   method: "GET",
 };
 
-export const turnOnSocket = () => {
+export const requestSocket = () => {
   let data = "";
 
   // return https
@@ -24,6 +24,7 @@ export const turnOnSocket = () => {
         if (!!data && !JSON?.parse?.(data)?.connected) {
           throw createError(404, "Socket didn't connect!");
         }
+        console.log("Socket turned on");
       });
     })
     .on("error", (error) => console.error(error))

@@ -128,7 +128,6 @@ export const MessagesProvider: FC<Props> = ({ children }) => {
 
   useEffect(() => {
     socket.emit("join", me?._id, conversationId);
-    console.log("i joined");
   }, [conversationId]);
 
   useEffect(() => {

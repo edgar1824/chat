@@ -11,8 +11,8 @@ import {
 interface Props
   extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
     PropsWithChildren {
-  onOutside?: () => void;
-  onInside?: () => void;
+  onOutside?: (event: MouseEvent) => void;
+  onInside?: (event: MouseEvent) => void;
   onRef?: (ref: RefObject<HTMLDivElement>) => void;
 }
 
@@ -31,9 +31,7 @@ export const OutsideDetector: FC<Props> = ({
 
     function handleClickOutside(event: MouseEvent) {
       if (ref.current && !ref.current?.contains(event.target as Node | null)) {
-        onOutside?.();
-      } else {
-        onInside?.();
+        onOutside?.(event);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);

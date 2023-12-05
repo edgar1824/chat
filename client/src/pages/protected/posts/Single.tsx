@@ -55,7 +55,7 @@ const Component: FC = () => {
   }, [showComments, commentsRef.current]);
 
   return (
-    <div className="flex gap-5 py-5 w-full h-screen md:h-auto md:flex-col md:mt-5 md:min-h-[90vh]">
+    <div className="flex gap-5 w-full h-screen md:h-auto md:flex-col md:min-h-[90vh]">
       <img
         className="bg-slate-100 object-contain w-[40%] md:w-full md:self-center md:px-2 md:h-[60vh] md:border md:border-[rgb(186_186_186)] md:max-w-[500px]"
         src={post?.img}
@@ -65,7 +65,7 @@ const Component: FC = () => {
         <div className="flex flex-col gap-1 md:gap-2">
           <Link
             to={`/users/${post.user?._id}`}
-            className="flex items-center gap-4"
+            className="flex items-center gap-4 w-fit"
           >
             <img
               src={post.user?.img || PROFILE_IMG}
@@ -216,4 +216,10 @@ const action = routeActionHandler(async ({ data }) => {
   }
 }, true);
 
-export const Single = Object.assign(Component, { loader, action });
+// const loaderType: ILoaderData = null!;
+
+export const Single = Object.assign(Component, {
+  loader,
+  action,
+  loaderType: null! as ILoaderData,
+});

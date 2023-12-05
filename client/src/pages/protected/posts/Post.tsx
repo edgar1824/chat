@@ -46,8 +46,8 @@ export const Post: FC<IPost<IUser>> = ({
               parentClass="w-full"
               className="break-words break-all leading-6 text-base md:leading-4 md:text-sm"
               lines={1}
-              leading={media770 ? 16 : 24}
               text={desc}
+              mediaDeps={[media770]}
             />
           </div>
           <div className="flex flex-col">

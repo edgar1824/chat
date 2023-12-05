@@ -31,7 +31,7 @@ import Post from "./models/Post.js";
 import Comment from "./models/Comment.js";
 
 import "./config/passport-setup.js";
-import { turnOnSocket } from "./config/socket.js";
+import { requestSocket } from "./config/socket.js";
 import { connectDB } from "./config/db.js";
 
 const __dirname = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
@@ -102,8 +102,7 @@ app.use(errorBoundary);
 
 app.listen(process.env.PORT, () => {
   console.log("Server started");
-  turnOnSocket().on("response", () => {
-    console.log("Socket turned on");
+  requestSocket().on("response", () => {
     connectDB().then(() => {
       // Comment.deleteMany().then(() => console.log("Comment dropped!"));
       // Message.deleteMany().then(() => console.log("Message dropped!"));

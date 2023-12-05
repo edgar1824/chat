@@ -97,7 +97,7 @@ export const Conversation = ({
           src={
             type === "dialogue" && Array.isArray(img)
               ? !me?.img
-                ? img.filter(Boolean)[0]
+                ? img.filter(Boolean)[0] || PROFILE_IMG
                 : img?.find((i) => i !== me?.img) || PROFILE_IMG
               : (img as string) ||
                 "https://cdn-icons-png.flaticon.com/512/25/25437.png"
