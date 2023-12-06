@@ -10,6 +10,7 @@ export const postsRoutes: RouteObject = {
   element: <Posts />,
   handle: {
     crumb: () => "Posts",
+    path: "/posts",
   },
   children: [
     {
@@ -23,6 +24,7 @@ export const postsRoutes: RouteObject = {
       action: CreatePost.action,
       handle: {
         crumb: () => "Create Post",
+        path: "/posts/new",
       },
     },
     {
@@ -31,6 +33,7 @@ export const postsRoutes: RouteObject = {
       loader: MyPosts.loader,
       handle: {
         crumb: () => "My Posts",
+        path: "/posts/mine",
       },
     },
     {

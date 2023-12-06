@@ -30,7 +30,6 @@ interface Props {
     | ReactNode;
   elementProps?: Omit<HTMLAttributes<HTMLDivElement>, "className">;
   as?: keyof JSX.IntrinsicElements;
-  as2?: JSX.Element;
 }
 
 export const Box: FC<Props> = ({

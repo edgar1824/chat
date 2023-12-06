@@ -1,4 +1,4 @@
-import { faComment, faEye } from "@fortawesome/free-solid-svg-icons";
+import { faComment } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CstmInput, CustomBtn } from "components/forms";
 import { LikeButton, WatchedEye } from "components/main";
@@ -20,7 +20,6 @@ import {
   useFormAction,
   useLoaderData,
   useLocation,
-  useNavigation,
   useParams,
   useSubmit,
 } from "react-router-dom";
@@ -39,6 +38,16 @@ const Component: FC = () => {
   const commentsRef = useRef<HTMLDivElement>(null!);
   const media770 = useMedia(770);
 
+  const scrollToComments = () =>
+    new Promise((res) => {
+      if (commentsRef?.current) {
+        setTimeout(() => {
+          commentsRef.current?.scrollIntoView?.({ behavior: "smooth" });
+          res(true);
+        }, 100);
+      }
+    });
+
   useEffect(() => {
     if (!!location.state?.openComments) {
       setShowComments(true);
@@ -46,22 +55,19 @@ const Component: FC = () => {
   }, [location, commentsRef.current]);
 
   useEffect(() => {
-    if (!!location.state?.openComments && commentsRef.current) {
-      setTimeout(() => {
-        console.log(123);
-        commentsRef.current.scrollIntoView({ behavior: "smooth" });
-      }, 100);
+    if (!!location.state?.openComments || showComments) {
+      scrollToComments();
     }
   }, [showComments, commentsRef.current]);
 
   return (
     <div className="flex gap-5 w-full h-screen md:h-auto md:flex-col md:min-h-[90vh]">
       <img
-        className="bg-slate-100 object-contain w-[40%] md:w-full md:self-center md:px-2 md:h-[60vh] md:border md:border-[rgb(186_186_186)] md:max-w-[500px]"
+        className="bg-slate-100 object-contain w-[40%] md:w-full md:self-center md:px-2 md:h-[40vh] md:border md:border-[rgb(186_186_186)] md:max-w-[500px]"
         src={post?.img}
         alt=""
       />
-      <div className="flex-[6] flex flex-col gap-10 h-full md:px-2">
+      <div className="flex-[6] flex flex-col gap-10 h-full md:gap-4">
         <div className="flex flex-col gap-1 md:gap-2">
           <Link
             to={`/users/${post.user?._id}`}
@@ -77,7 +83,7 @@ const Component: FC = () => {
             </p>
           </Link>
           <p>{post?.desc}</p>
-          <div className="flex flex-col md:text-xl md:gap-2">
+          <div className="flex flex-col md:text-xl">
             <div className="flex gap-5">
               <LikeButton {...post} />
               <WatchedEye
@@ -87,7 +93,9 @@ const Component: FC = () => {
               />
               <div className="flex items-center gap-1 text-xl md:text-base">
                 <FontAwesomeIcon
-                  onClick={() => setShowComments((p) => !p)}
+                  onClick={() => {
+                    setShowComments((p) => !p);
+                  }}
                   icon={faComment}
                   color="gray"
                   className="w-6 h-6 cursor-pointer md:w-5 md:h-5"
@@ -113,7 +121,7 @@ const CommentsBlock: FC<{ commentsRef: MutableRefObject<HTMLDivElement> }> = ({
   const { me } = useAuthContext();
 
   return (
-    <div ref={commentsRef} className="flex flex-col gap-5 flex-[1]">
+    <div ref={commentsRef} className="flex flex-col gap-5 flex-[1] md:gap-2">
       <div className="min-h-[200px] shadow-[0_5px_20px_5px_rgb(0_0_0_/_0.1)] relative flex flex-col gap-3 flex-[1] overflow-y-auto max-h-[calc(100vh_-_270px)] py-5 pr-2 md:py-2">
         {!!comments.length ? (
           comments?.map(({ desc, comentatorId, _id }) => (
@@ -215,8 +223,6 @@ const action = routeActionHandler(async ({ data }) => {
       return null!;
   }
 }, true);
-
-// const loaderType: ILoaderData = null!;
 
 export const Single = Object.assign(Component, {
   loader,

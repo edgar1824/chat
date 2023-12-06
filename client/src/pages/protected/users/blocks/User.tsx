@@ -15,20 +15,20 @@ export const User: FC<Props> = ({
   friends,
 }) => {
   return (
-    <div className="flex justify-between gap-5 px-5 py-3 rounded shadow-cst">
+    <div className="flex justify-between gap-5 px-5 py-3 rounded shadow-cst md:px-2 md:py-1.5 md:gap-3">
       <Link
         to={`/users/${_id}`}
-        className="flex-[1] flex gap-10 items-center lg:gap-5 lg:items-start"
+        className="flex gap-5 w-full lg:gap-5 lg:items-start"
       >
         <img
           src={
             img ||
-            "https://t4.ftcdn.net/jpg/03/59/58/91/360_F_359589186_JDLl8dIWoBNf1iqEkHxhUeeOulx0wOC5.jpg"
+            "https://austinpeopleworks.com/wp-content/uploads/2020/12/blank-profile-picture-973460_1280.png"
           }
           alt=""
-          className="rounded w-[150px] h-[150px] lg:w-[100px] lg:h-[100px] md:!w-[50px] md:!h-[50px]"
+          className="rounded object-fill w-[100px] h-[100px] lg:w-[100px] lg:h-[100px] md:!w-[70px] md:!h-[70px]"
         />
-        <div className="flex flex-col gap-3 flex-[1]">
+        <div className="flex flex-col gap-3 flex-[1] md:gap-1 md:pt-1">
           <p className="text-[20px] font-bold md:text-base">{username}</p>
           <span className="text-base md:text-sm">{country}</span>
           <span className="text-base md:text-sm">{city}</span>

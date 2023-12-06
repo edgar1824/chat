@@ -16,7 +16,7 @@ export const Friend: FC<IUser> = ({ city, country, img, username, _id }) => {
         <img
           src={
             img ||
-            "https://t4.ftcdn.net/jpg/03/59/58/91/360_F_359589186_JDLl8dIWoBNf1iqEkHxhUeeOulx0wOC5.jpg"
+            "https://austinpeopleworks.com/wp-content/uploads/2020/12/blank-profile-picture-973460_1280.png"
           }
           alt=""
           className="rounded w-[150px] h-[150px] lg:w-[100px] lg:h-[100px] md:!w-[50px] md:!h-[50px]"

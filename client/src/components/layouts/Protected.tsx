@@ -1,46 +1,21 @@
 import { AuthProvider, useAuthContext } from "contexts";
 import { formFn, routeActionHandler, userHandler } from "helpers";
-import { FC, Fragment, ReactNode } from "react";
-import {
-  Navigate,
-  Outlet,
-  UIMatch,
-  useLocation,
-  useMatches,
-} from "react-router-dom";
+import { FC, ReactNode } from "react";
+import { Navigate, Outlet } from "react-router-dom";
 import {
   AuthService,
   NotificationService,
   UserService,
 } from "request/services";
 import { Loading, Navbar } from "../main";
-import { Container } from "components/reusable";
+import { Crumbs } from "./Crumbs";
 
 const Component: FC = () => {
-  const location = useLocation();
-  const matches = useMatches() as UIMatch<
-    unknown,
-    { crumb?: (data?: any) => ReactNode }
-  >[];
-  const filteredCrumbs = matches.filter((m) => !!m?.handle?.crumb);
-
   return (
     <AuthProvider>
       <AuthLoading>
         <Navbar />
-        {location.pathname.includes("/post") && (
-          <Container className="pt-4">
-            {filteredCrumbs.map((m, i) => (
-              <Fragment key={i}>
-                {" "}
-                {filteredCrumbs.length > 1 && i > 0 && "> "}{" "}
-                <span className="italic text-gray-700 underline">
-                  {m.handle?.crumb?.(m.data)}
-                </span>
-              </Fragment>
-            ))}
-          </Container>
-        )}
+        <Crumbs />
         <main className="flex-[1] flex flex-col">
           <Outlet />
         </main>

@@ -1,5 +1,5 @@
 .div {
-  @apply shrink-0 h-full w-fit rounded bg-black/10 z-[1] relative overflow-hidden;
+  @apply shrink-0 rounded bg-black/10 z-[1] relative overflow-hidden;
 }
 .div:after {
   content: "";
